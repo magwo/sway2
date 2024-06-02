@@ -1,16 +1,16 @@
-import { Plant, PlantSegment } from "../../../procedural/plant";
-
-
-function flower(segment: PlantSegment) {
-
-}
-
+import { Plant, PlantSegment } from '../../../procedural/plant';
 
 function segmentBranchPath(segment: PlantSegment) {
-  const baseRight = segment.type !== 'main_branch' ? segment.getBaseRight() : segment.parent!.getEndRight();
+  const baseRight =
+    segment.type !== 'main_branch'
+      ? segment.getBaseRight()
+      : segment.parent!.getEndRight();
   const endRight = segment.getEndRight();
   const endLeft = segment.getEndLeft();
-  const baseLeft = segment.type !== 'main_branch' ? segment.getBaseLeft() : segment.parent!.getEndLeft();
+  const baseLeft =
+    segment.type !== 'main_branch'
+      ? segment.getBaseLeft()
+      : segment.parent!.getEndLeft();
   return `M ${baseRight.x} ${baseRight.y} L ${endRight.x} ${endRight.y} L ${endLeft.x} ${endLeft.y} ${baseLeft.x} ${baseLeft.y} Z`;
 }
 
@@ -23,7 +23,33 @@ export function renderSegmentsRecursively(segment: PlantSegment): string {
   // Plants are described in SI units (meters), so scale accordingly
   let path = segmentBranchPath(segment);
   for (const subSegment of segment.branches) {
-    path += renderSegmentsRecursively(subSegment);
+    if (
+      subSegment.type === 'root' ||
+      subSegment.type === 'branch' ||
+      subSegment.type === 'main_branch'
+    ) {
+      path += renderSegmentsRecursively(subSegment);
+    }
   }
   return path;
+}
+
+function flower(segment: PlantSegment) {
+  const pos = segment.position;
+  return `<circle cx="${pos.x}" cy="${pos.y}" r="0.5" />`;
+}
+
+export function renderFlowers(plant: Plant): string {
+  return renderFlowersRecursively(plant.rootSegment);
+}
+
+export function renderFlowersRecursively(segment: PlantSegment): string {
+  let markup = '';
+  for (const subSegment of segment.branches) {
+    if (subSegment.type === 'flower') {
+      markup += flower(subSegment);
+    }
+    markup += renderFlowersRecursively(subSegment);
+  }
+  return markup;
 }

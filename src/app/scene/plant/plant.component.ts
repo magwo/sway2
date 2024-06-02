@@ -1,7 +1,8 @@
 import { Component, computed, effect, input } from '@angular/core';
 import { Plant } from '../../../procedural/plant';
 import { Time } from '../../app';
-import { renderPlantBranchesPath } from './plant-svg';
+import { renderFlowers, renderPlantBranchesPath } from './plant-svg';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: '[swayPlant]',
@@ -24,10 +25,17 @@ export class PlantComponent {
 
   branchesPath = computed<string>(() => {
     const time = this.time();
-    return renderPlantBranchesPath(this.plant());
+    const plant = this.plant();
+    return renderPlantBranchesPath(plant);
   });
 
-  constructor() {
+  flowersMarkup = computed<SafeHtml>(() => {
+    const time = this.time();
+    const plant = this.plant();
+    return this.sanitizer.bypassSecurityTrustHtml(renderFlowers(plant));
+  });
+
+  constructor(private sanitizer: DomSanitizer) {
     effect(() => {
       const time = this.time();
       const plant = this.plant();

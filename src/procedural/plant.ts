@@ -116,7 +116,7 @@ export class Plant {
     dtSeconds: number,
     maxDepth: number
   ) {
-    const slowDown = Math.min(1, 10 / (0.01 + segment.length * segment.width));
+    const slowDown = Math.min(1, 30 / (0.01 + segment.length * segment.width));
     dtSeconds *= slowDown;
     segment.length += dtSeconds;
     segment.width += dtSeconds * 0.07;
@@ -133,6 +133,7 @@ export class Plant {
       let type: PlantSegmentType = 'branch';
 
       if (maxDepth <= 1) {
+        console.log("FLOWER");
         type = 'flower';
         anchorLongitudinal = 1;
       } else if (segment.branches.length === 0) {
