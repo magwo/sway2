@@ -16,6 +16,10 @@ export class PlantComponent {
 
   transform = computed<string>(() => {
     const pos = this.position();
-    return `translate(${pos[0]}, ${pos[1]})`;
+    return `translate(${pos.x}, ${pos.y})`;
+  });
+
+  svgPath = computed<string>(() => {
+    return `M 1 0 L 1 -5 L 3 -6 L 1 -7 L 0 -15 L -1 -2 Z`;
   });
 }

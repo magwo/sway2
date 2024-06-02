@@ -1,6 +1,7 @@
 # Interface
 
 * Play/pause
+* Modes? Generation/evolution, random, art, fullscreen?
 
 # Plants
 

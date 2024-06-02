@@ -8,10 +8,9 @@ import { Plant } from '../../procedural/plant';
   standalone: true,
   imports: [PlantComponent],
   templateUrl: './scene.component.html',
-  styleUrl: './scene.component.scss'
+  styleUrl: './scene.component.scss',
 })
 export class SceneComponent {
-
   plants: Plant[];
 
   constructor() {
@@ -21,9 +20,8 @@ export class SceneComponent {
     const plantCount = plantsGenerator.getInteger(4, 10);
 
     this.plants = [...Array(plantCount)].map((_, i) => {
-      console.log("Making new plant generator");
       const plantGenerator = plantsGenerator.getDerivedGenerator(i);
-      return new Plant([20 * i, 100], plantGenerator);
+      return new Plant({ x: 20 * i, y: 100 }, plantGenerator);
     });
   }
 }
