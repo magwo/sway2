@@ -1,4 +1,8 @@
-const TWO_PI = Math.PI * 2;
+export const TWO_PI = Math.PI * 2;
+export const QUARTER_CIRCLE = Math.PI / 2;
+export const HALF_CIRCLE = Math.PI;
+export const FULL_CIRCLE = TWO_PI;
+
 export type Position = { x: number; y: number };
 export class PositionMath {
   private constructor() {}
@@ -7,6 +11,9 @@ export class PositionMath {
   }
   static add(p1: Position, p2: Position): Position {
     return { x: p1.x + p2.x, y: p1.y + p2.y };
+  }
+  static addDirectionAndLength(p: Position, angle: number, length: number): Position {
+    return { x: p.x + length * Math.cos(angle), y: p.y + length * Math.sin(angle) };
   }
   static delta(p1: Position, p0: Position): Position {
     return { x: p1.x - p0.x, y: p1.y - p0.y };
@@ -34,6 +41,10 @@ export class PositionMath {
     const factor = dotProduct / targetLenSqrd;
     return { x: targetVector.x * factor, y: targetVector.y * factor };
   }
+
+//   static getNormalOfLength(v1: Position, length: number) {
+    
+//   }
 
   static makeAngleWorkable(angle: number) {
     return ((angle + TWO_PI) % TWO_PI) + TWO_PI;

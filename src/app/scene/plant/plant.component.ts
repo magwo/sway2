@@ -1,5 +1,7 @@
-import { Component, computed, input } from '@angular/core';
-import { Position } from '../../../procedural/position';
+import { Component, computed, effect, input } from '@angular/core';
+import { Plant } from '../../../procedural/plant';
+import { Time } from '../../app';
+import { renderPlantBranchesPath } from './plant-svg';
 
 @Component({
   selector: '[swayPlant]',
@@ -12,14 +14,27 @@ import { Position } from '../../../procedural/position';
   }
 })
 export class PlantComponent {
-  position = input.required<Position>();
+  plant = input.required<Plant>();
+  time = input.required<Time>();
 
   transform = computed<string>(() => {
-    const pos = this.position();
+    const pos = this.plant().position;
     return `translate(${pos.x}, ${pos.y})`;
   });
 
-  svgPath = computed<string>(() => {
-    return `M 1 0 L 1 -5 L 3 -6 L 1 -7 L 0 -15 L -1 -2 Z`;
+  branchesPath = computed<string>(() => {
+    const time = this.time();
+    return renderPlantBranchesPath(this.plant());
   });
+
+  constructor() {
+    effect(() => {
+      const time = this.time();
+      const plant = this.plant();
+
+      if(time.currentTime !== time.previousTime) {
+        plant.grow(time.currentTime - time.previousTime);
+      }
+    });
+  }
 }

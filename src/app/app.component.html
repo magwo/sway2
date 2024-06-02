@@ -1,12 +1,14 @@
 
-<style>
-  
-</style>
 <main class="main">
+  <sway-scene [time]="time()"></sway-scene>
   <div class="content">
     <h1>SWAY 2</h1>
-    <button>Grow</button>
-    <sway-scene></sway-scene>
+    <p>By Magnus Wolffelt</p>
+    <div class="pill-group">
+      <button class="pill" (click)="playSlow()">Grow slow</button>
+      <button class="pill" (click)="playNormal()">Grow normal</button>
+      <button class="pill" (click)="playFast()">Grow fast</button>
+    </div>
   </div>
 </main>
 
