@@ -57,9 +57,9 @@ describe('random', () => {
     describe('getDerivedGenerator', () => {
       it('derived generator should generate expected raw numbers', () => {
         const derivedGenerator = new RandomGenerator([3e4, 4e5, 5e6, 6e8]).getDerivedGenerator(0);
-        expect(derivedGenerator.get()).toEqual(0.8418553855735809);
-        expect(derivedGenerator.get()).toEqual(0.6474622760433704);
-        expect(derivedGenerator.get()).toEqual(0.8741183190140873);
+        expect(derivedGenerator.get()).toEqual(0.20574052282609046);
+        expect(derivedGenerator.get()).toEqual(0.8770524386782199);
+        expect(derivedGenerator.get()).toEqual(0.6391036519780755);
       });
 
       it('getting a derived generator should not affect parent generator', () => {
@@ -103,6 +103,25 @@ describe('random', () => {
           const n1 = generator.get();
           const n2 = derivedGenerator1.get();
           const n3 = derivedDerivedGenerator.get();
+          expect(n1).not.toEqual(n2);
+          expect(n1).not.toEqual(n3);
+          expect(n2).not.toEqual(n3);
+        }
+      });
+
+      it('derived generators with off-by-one order should not genereate off-by-one identical sequences', () => {
+        const generator = new RandomGenerator([3e4, 4e5, 5e6, 6e8]);
+        const derivedGenerator1 = generator.getDerivedGenerator(1);
+        const derivedGenerator2 = generator.getDerivedGenerator(2);
+
+        derivedGenerator1.get();
+        
+        for(let i=0; i<5; i++) {
+          const n1 = generator.get();
+          const n2 = derivedGenerator1.get();
+          const n3 = derivedGenerator2.get();
+          console.log(n1, n2, n3);
+
           expect(n1).not.toEqual(n2);
           expect(n1).not.toEqual(n3);
           expect(n2).not.toEqual(n3);

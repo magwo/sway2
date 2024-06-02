@@ -66,8 +66,7 @@ export class RandomGenerator {
    */
   public getDerivedGenerator(order: number) {
     const seed = this.seed;
-    // Rotate the parent seed to avoid identical but offset random sequences
-    const seeder = simpleFastCounter32(seed[3], seed[0], seed[1], seed[2]);
+    const seeder = simpleFastCounter32(...seed);
     // Step the seeder at least once
     for (let i = 0; i < order + 1; i++) {
       seeder();
