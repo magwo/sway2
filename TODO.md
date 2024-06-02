@@ -19,7 +19,8 @@
 * Layers? Leaves on top? Not always?
 * Gradients
 * Shadows
-* Particles? Dust? Glitter? Pollen?
+* Particles? Dust? Glitter? Pollen? Glow?
+* Ground
 
 
 # Environment
@@ -27,3 +28,4 @@
 * Bees? Other insects?
 * Wind
 * Rocks, pebbles
+* Sloping ground

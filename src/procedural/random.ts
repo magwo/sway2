@@ -57,6 +57,15 @@ export class RandomGenerator {
     return Math.floor(min + (max - min) * num);
   }
 
+  public getQuadraticDistribution(min: number, max: number) {
+    const rnd: ZeroOneFloat = this.get();
+    return min + (max - min) * rnd * Math.abs(rnd);
+  }
+
+  public getLinearDistribution(min: number, max: number) {
+    return this.getFloat(min, max);
+  }
+
   public getInteger32(): number {
     return getInteger32(this.get());
   }
