@@ -1,32 +1,21 @@
 <svg width="100%" height="100%" preserveAspectRatio="xMidYMax slice" viewBox="0 0 100 100">
     <defs>
-        <linearGradient id="0" x1="0.74" y1="0.06" x2="0.26" y2="0.94">
-        <stop offset="0%" stop-color="#2f855a"/>
-        <stop offset="13.86%" stop-color="#348a2a"/>
-        <stop offset="27.71%" stop-color="#648627"/>
-        <stop offset="41.57%" stop-color="#7e8224"/>
-        <stop offset="55.43%" stop-color="#947f1f"/>
-        <stop offset="69.29%" stop-color="#ab7919"/>
-        <stop offset="97%" stop-color="#ff3b05"/>
+        <linearGradient id="colorGradientPrimary" x1="0.74" y1="0.06" x2="0.26" y2="0.94">
+            <stop offset="1%" [attr.stop-color]="primaryColorGradient()[0].toString()"/>
+            <stop offset="99%" [attr.stop-color]="primaryColorGradient()[1].toString()"/>
         </linearGradient>
-        <linearGradient id="1" x1="0.26" y1="0.06" x2="0.74" y2="0.94">
-        <stop offset="0%" stop-color="#8ace36"/>
-        <stop offset="14.29%" stop-color="rgba(116, 197, 54, 0.86)"/>
-        <stop offset="28.57%" stop-color="rgba(93, 188, 54, 0.71)"/>
-        <stop offset="42.86%" stop-color="rgba(63, 179, 53, 0.57)"/>
-        <stop offset="57.14%" stop-color="rgba(52, 168, 71, 0.43)"/>
-        <stop offset="71.43%" stop-color="rgba(51, 156, 84, 0.29)"/>
-        <stop offset="100%" stop-color="rgba(47, 133, 90, 0)"/>
+        <linearGradient id="colorGradientAdditional" x1="0.26" y1="0.06" x2="0.74" y2="0.94">
+            <stop offset="1%" [attr.stop-color]="additionalColorGradient()[0].toString()"/>
+            <stop offset="99%" [attr.stop-color]="additionalColorGradient()[1].toString()"/>
         </linearGradient>
-        <linearGradient id="2" x1="0.99" y1="0.42" x2="0.01" y2="0.58">
-        <stop offset="1%" stop-color="#faf089"/>
-        <stop offset="15%" stop-color="rgba(249, 231, 137, 0.86)"/>
-        <stop offset="29%" stop-color="rgba(247, 221, 131, 0.71)"/>
-        <stop offset="43%" stop-color="rgba(247, 212, 122, 0.57)"/>
-        <stop offset="57%" stop-color="rgba(246, 203, 113, 0.43)"/>
-        <stop offset="71%" stop-color="rgba(246, 193, 103, 0.29)"/>
-        <stop offset="99%" stop-color="rgba(246, 173, 85, 0)"/>
+        <linearGradient id="lightGradient" x1="0.99" y1="0.42" x2="0.01" y2="0.58">
+        <stop offset="1%" [attr.stop-color]="lightGradient()[0].toString()"/>
+        <stop offset="99%" [attr.stop-color]="lightGradient()[1].toString()"/>
         </linearGradient>
+        <linearGradient id="overlayGradient" x1="0.99" y1="0.42" x2="0.01" y2="0.58">
+            <stop offset="1%" [attr.stop-color]="overlayGradient()[0].toString()"/>
+            <stop offset="99%" [attr.stop-color]="overlayGradient()[1].toString()"/>
+            </linearGradient>
         <linearGradient id="shadowGradient" x1="0.5" y1="1" x2="0.5" y2="0">
             <stop offset="1%" stop-color="rgba(0,0,0,0.08)"/>
             <stop offset="99%" stop-color="rgba(0,0,0,0.02)"/>
@@ -35,10 +24,32 @@
             <stop offset="5%" stop-color="rgba(255, 255, 255, 0.06)"/>
             <stop offset="90%" stop-color="rgba(255, 255, 255, 0.005)"/>
         </linearGradient>
+
+
+	    <filter id="sofGlow" height="300%" width="300%" x="-75%" y="-75%">
+            <!-- Thicken out the original shape -->
+            <feMorphology operator="dilate" radius="0.2" in="SourceAlpha" result="thicken" />
+
+            <!-- Use a gaussian blur to create the soft blurriness of the glow -->
+            <feGaussianBlur in="thicken" stdDeviation="1" result="blurred" />
+
+            <!-- Change the colour -->
+            <feFlood [attr.flood-color]="primaryColorGradient()[0].toString()" result="glowColor" />
+
+            <!-- Color in the glows -->
+            <feComposite in="glowColor" in2="blurred" operator="in" result="softGlow_colored" />
+
+            <!--	Layer the effects together -->
+            <feMerge>
+                <feMergeNode in="softGlow_colored"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+
+        </filter>
     </defs>
-    <rect fill="url(#0)" height="100%" width="100%"/>
-    <rect fill="url(#1)" height="100%" width="100%"/>
-    <rect fill="url(#2)" height="100%" width="100%"/>
+    <rect fill="url(#colorGradientPrimary)" height="100%" width="100%"/>
+    <rect fill="url(#colorGradientAdditional)" height="100%" width="100%"/>
+    <rect fill="url(#lightGradient)" height="100%" width="100%"/>
 
     <circle style="mix-blend-mode: hard-light;" fill="url(#moonGradient)" cx="32" cy="45" r="4"></circle>
     <circle style="mix-blend-mode: hard-light;" fill="url(#moonGradient)" cx="20" cy="50" r="10"></circle>
@@ -47,4 +58,6 @@
     @for (plant of plants; track plant) {
         <g swayPlant [plant]="plant" [time]="time()"></g>
     }
+
+    <rect fill="url(#overlayGradient)" height="100%" width="100%"/>
 </svg>

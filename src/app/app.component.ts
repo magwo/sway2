@@ -28,6 +28,12 @@ export class AppComponent {
     this.growSpeed.update((g) => g !== 0 ? 0 : 3);
   }
 
+  newTheme() {
+    this.themeCounter.update((tc => tc+1));
+  }
+
+  themeCounter = signal(10000*Math.random());
+
   constructor() {
     // TODO: Use requestAnimationFrame
     setInterval(() => {

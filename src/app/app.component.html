@@ -1,6 +1,6 @@
 
 <main class="main">
-  <sway-scene [time]="time()"></sway-scene>
+  <sway-scene [time]="time()" [themeCounter]="themeCounter()"></sway-scene>
   <div class="content">
     <h1>SWAY 2</h1>
     <p>By Magnus Wolffelt</p>
@@ -8,6 +8,7 @@
       <button class="pill" (click)="playSlow()">Grow slow</button>
       <button class="pill" (click)="playNormal()">Grow normal</button>
       <button class="pill" (click)="playFast()">Grow fast</button>
+      <button class="pill" (click)="newTheme()">New theme</button>
     </div>
   </div>
 </main>

@@ -14,6 +14,8 @@ export type PlantSegmentType = 'root' | 'main_branch' | 'branch' | 'flower' | 'f
 
 // TODO: Maybe different types for different types of segments - trunk, branches, leaves?
 export class PlantSegment {
+  branches: PlantSegment[] = [];
+
   constructor(
     public parent: PlantSegment | undefined,
     public position: Position,
@@ -25,7 +27,6 @@ export class PlantSegment {
     public branchAnchorAngle: number = 0
   ) {}
   // roundness: number;
-  branches: PlantSegment[] = [];
 
   getEndPoint() {
     // TODO: Curvature?
@@ -133,7 +134,6 @@ export class Plant {
       let type: PlantSegmentType = 'branch';
 
       if (maxDepth <= 1) {
-        console.log("FLOWER");
         type = 'flower';
         anchorLongitudinal = 1;
       } else if (segment.branches.length === 0) {
@@ -145,7 +145,7 @@ export class Plant {
       segment.branches.push(
         new PlantSegment(
             segment,
-          // Star with zeroes, update position/rotation below
+          // Start with zeroes, update position/rotation below
           { x: 0, y: 0 },
           0,
           0,
