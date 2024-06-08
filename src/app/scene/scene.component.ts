@@ -3,6 +3,8 @@ import { PlantComponent } from './plant/plant.component';
 import { RandomGenerator } from '../../procedural/random';
 import { Plant } from '../../procedural/plant';
 import { Time } from '../app';
+import { GenesComponent } from './genes/genes.component';
+import { PlantGenes } from '../../procedural/plant-genes';
 
 class HslaColor {
   constructor(
@@ -23,12 +25,13 @@ class HslaColor {
 @Component({
   selector: 'sway-scene',
   standalone: true,
-  imports: [PlantComponent],
+  imports: [PlantComponent, GenesComponent],
   templateUrl: './scene.component.html',
   styleUrl: './scene.component.scss',
 })
 export class SceneComponent {
   time = input.required<Time>();
+  genes: PlantGenes;
   plants: Plant[];
 
   themeCounter = input.required<number>();
@@ -42,7 +45,9 @@ export class SceneComponent {
 
     const plantsGenerator = rootGenerator.getDerivedGenerator(0);
     this.gradientGenerator = rootGenerator.getDerivedGenerator(1);
+    const genesGenerator = plantsGenerator.getDerivedGenerator(0);
 
+    this.genes = PlantGenes.generateNew(genesGenerator);
     const plantCount = 3;
     // const plantCount = plantsGenerator.getInteger(4, 6);
 
@@ -55,6 +60,7 @@ export class SceneComponent {
           x: 50 + 30 * Math.ceil(i / 2) * alternator,
           y: 90 + 5 * Math.random(),
         },
+        this.genes,
         plantGenerator
       );
     });

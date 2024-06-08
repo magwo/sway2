@@ -1,3 +1,4 @@
+import { max } from 'rxjs';
 import { PlantGenes } from './plant-genes';
 import {
   FULL_CIRCLE,
@@ -6,15 +7,17 @@ import {
   QUARTER_CIRCLE,
 } from './position';
 import { RandomGenerator } from './random';
+import { placeBranches } from './branch-placer';
 
 const GROWTH_TIME_SECONDS = 10;
 const END_WIDTH_FACTOR = 0.5;
 
-export type PlantSegmentType = 'root' | 'main_branch' | 'branch' | 'flower' | 'fruit';
+export type PlantSegmentType = 'root' | 'main_branch' | 'branch' | 'leaf' | 'flower' | 'fruit';
 
 // TODO: Maybe different types for different types of segments - trunk, branches, leaves?
 export class PlantSegment {
   branches: PlantSegment[] = [];
+  isGrowing = false;
 
   constructor(
     public parent: PlantSegment | undefined,
@@ -92,12 +95,10 @@ export class PlantSegment {
 }
 
 export class Plant {
-  public age = 0;
-  public rootSegment: PlantSegment;
-  private genes: PlantGenes;
+  public readonly age = 0;
+  public readonly rootSegment: PlantSegment;
 
-  constructor(public position: Position, private generator: RandomGenerator) {
-    this.genes = PlantGenes.generateNew(generator);
+  constructor(public position: Position, public readonly genes: PlantGenes, private generator: RandomGenerator) {
     this.rootSegment = new PlantSegment(
         undefined,
       { x: 0, y: 0 },
@@ -106,13 +107,53 @@ export class Plant {
       0,
       'root'
     );
+
+    this.planBranches();
+    console.log("getTotalBranchCount", this.getTotalBranchCount());
   }
+
+  getTotalBranchCount(): number {
+     return this.getBranchCountRecursively(this.rootSegment);
+  }
+
+  private getBranchCountRecursively(segment: PlantSegment): number {
+    let sum = 1;
+    for (const subSegment of segment.branches) {
+      sum += this.getBranchCountRecursively(subSegment);
+    }
+    return sum;
+  }
+
+  planBranches() {
+    this.planBranchesRecursively(this.rootSegment, this.genes.data.maxBranchDepth);
+  }
+
+  private planBranchesRecursively(
+    segment: PlantSegment,
+    maxDepth: number
+  ) {
+    placeBranches(segment, this.generator, this.genes.data);
+
+    if(maxDepth > 0) {
+      for (const subSegment of segment.branches) {
+        this.planBranchesRecursively(subSegment, maxDepth - 1)
+      }
+    }
+  }
+
 
   grow(dtSeconds: number) {
-    this.growSegmentsRecursively(this.rootSegment, dtSeconds, 3);
+    // Don't grow too large timesteps
+    let remainingSeconds = dtSeconds;
+    const maxStepSize = 1/60;
+    while (remainingSeconds > 0) {
+      const toStep = Math.min(remainingSeconds, maxStepSize);
+      this.growSegmentsRecursively(this.rootSegment, toStep, 3);
+      remainingSeconds -= maxStepSize;
+    }
   }
 
-  growSegmentsRecursively(
+  private growSegmentsRecursively(
     segment: PlantSegment,
     dtSeconds: number,
     maxDepth: number
@@ -124,38 +165,6 @@ export class Plant {
     segment.branchAnchorAngle +=
       0.2 * (-0.5 * dtSeconds + dtSeconds * Math.random());
 
-    const MAX_BRANCHES = 6;
-    if (segment.branches.length <= MAX_BRANCHES && segment.length > 10) {
-      let anchorLongitudinal = this.generator.getFloat(0.3, 1.0);
-      let anchorRotation = this.generator.getFloat(
-        -QUARTER_CIRCLE,
-        QUARTER_CIRCLE
-      );
-      let type: PlantSegmentType = 'branch';
-
-      if (maxDepth <= 1) {
-        type = 'flower';
-        anchorLongitudinal = 1;
-      } else if (segment.branches.length === 0) {
-        // Make first branch stick to top of trunk
-        anchorLongitudinal = 1;
-        anchorRotation /= 3;
-        type = 'main_branch'
-      }
-      segment.branches.push(
-        new PlantSegment(
-            segment,
-          // Start with zeroes, update position/rotation below
-          { x: 0, y: 0 },
-          0,
-          0,
-          0,
-          type,
-          anchorLongitudinal,
-          anchorRotation
-        )
-      );
-    }
 
     for (const subSegment of segment.branches) {
       subSegment.position = segment.getBranchPosition(
@@ -163,7 +172,7 @@ export class Plant {
       );
       subSegment.rotation = segment.rotation + subSegment.branchAnchorAngle;
 
-      if (maxDepth > 0) {
+      if (maxDepth >= 0 && segment.length > (1+maxDepth) * 3) {
         this.growSegmentsRecursively(subSegment, dtSeconds * 0.8, maxDepth - 1);
       }
     }

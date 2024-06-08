@@ -52,9 +52,9 @@ export class RandomGenerator {
     return min + (max - min) * this.get();
   }
 
-  public getInteger(min = 0, max = Number.MAX_SAFE_INTEGER): number {
+  public getInteger(minInclusive = 0, max = Number.MAX_SAFE_INTEGER): number {
     const num = this.get();
-    return Math.floor(min + (max - min) * num);
+    return Math.floor(minInclusive + (max - minInclusive) * num);
   }
 
   public getQuadraticDistribution(min: number, max: number) {

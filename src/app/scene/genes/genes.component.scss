@@ -1,0 +1,18 @@
+:host {
+    display: block;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 12px;
+    border-radius: 12px;
+
+    .definition-list {
+        min-width: 200px;
+        font-size: 0.8rem;
+        div {
+            display: flex;
+            justify-content: space-between;
+            > span {
+                display: block;
+            }
+        }
+    }
+}

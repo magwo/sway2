@@ -9,8 +9,13 @@
     bottom: 0;    
     overflow: hidden;
 
+    .genes-container {
+        position: absolute;
+        right: 12px;
+        top: 12px;
+    }
+
     svg {
         display: block;
-        transition: all 600ms ease-in-out;
     }
 }

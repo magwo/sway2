@@ -1,0 +1,14 @@
+<h2>Genes</h2>
+
+<div class="definition-list">
+  @for (gene of displayGenes(); track gene) {
+  <div>
+    <span>{{ gene.name }}</span>
+    @if ((gene.value | typeof) === 'number') {
+    <span>{{ gene.value | number : "1.2-4" }}</span>
+    } @else { Not number
+    <span>{{ gene.value }}</span>
+    }
+  </div>
+  }
+</div>

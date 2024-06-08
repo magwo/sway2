@@ -25,7 +25,7 @@ export class AppComponent {
   }
 
   playFast() {
-    this.growSpeed.update((g) => g !== 0 ? 0 : 3);
+    this.growSpeed.update((g) => g !== 0 ? 0 : 5);
   }
 
   newTheme() {
@@ -35,12 +35,12 @@ export class AppComponent {
   themeCounter = signal(10000*Math.random());
 
   constructor() {
-    // TODO: Use requestAnimationFrame
+    // TODO: Use requestAnimationFrame instead
     setInterval(() => {
       if (this.growSpeed() > 0) {
         this.time.update((t) => {
           return {
-            currentTime: t.currentTime + 0.05 * this.growSpeed(),
+            currentTime: Math.min(130, t.currentTime + (1/60) * this.growSpeed()),
             previousTime: t.currentTime,
           }
         });
