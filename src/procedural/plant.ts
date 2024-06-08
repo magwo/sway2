@@ -10,7 +10,7 @@ import { RandomGenerator } from './random';
 import { placeBranches } from './branch-placer';
 
 const GROWTH_TIME_SECONDS = 10;
-const END_WIDTH_FACTOR = 0.5;
+export const END_WIDTH_FACTOR = 0.5;
 
 export type PlantSegmentType = 'root' | 'main_branch' | 'branch' | 'leaf' | 'flower' | 'fruit';
 
@@ -30,6 +30,8 @@ export class PlantSegment {
     public branchAnchorAngle: number = 0
   ) {}
   // roundness: number;
+
+  // TODO: Maybe use computed (memoized) property for all corners, for better performance?
 
   getEndPoint() {
     // TODO: Curvature?
@@ -105,7 +107,9 @@ export class Plant {
       -QUARTER_CIRCLE,
       0,
       0,
-      'root'
+      'root',
+      0,
+      -QUARTER_CIRCLE + generator.getQuadraticDistribution(-0.2, 0.2)
     );
 
     this.planBranches();
@@ -134,7 +138,7 @@ export class Plant {
   ) {
     placeBranches(segment, this.generator, this.genes.data);
 
-    if(maxDepth > 0) {
+    if(maxDepth > 1) {
       for (const subSegment of segment.branches) {
         this.planBranchesRecursively(subSegment, maxDepth - 1)
       }
@@ -148,7 +152,7 @@ export class Plant {
     const maxStepSize = 1/60;
     while (remainingSeconds > 0) {
       const toStep = Math.min(remainingSeconds, maxStepSize);
-      this.growSegmentsRecursively(this.rootSegment, toStep, 3);
+      this.growSegmentsRecursively(this.rootSegment, toStep, 1);
       remainingSeconds -= maxStepSize;
     }
   }
@@ -156,7 +160,7 @@ export class Plant {
   private growSegmentsRecursively(
     segment: PlantSegment,
     dtSeconds: number,
-    maxDepth: number
+    depth: number
   ) {
     const slowDown = Math.min(1, 30 / (0.01 + segment.length * segment.width));
     dtSeconds *= slowDown;
@@ -165,15 +169,19 @@ export class Plant {
     segment.branchAnchorAngle +=
       0.2 * (-0.5 * dtSeconds + dtSeconds * Math.random());
 
+    if (segment.parent) {
+      segment.position = segment.parent.getBranchPosition(
+        segment.branchAnchorLongitudinal
+      );
+      segment.rotation = segment.parent.rotation + segment.branchAnchorAngle;
+    } else {
+      segment.rotation = segment.branchAnchorAngle;
+    }
 
     for (const subSegment of segment.branches) {
-      subSegment.position = segment.getBranchPosition(
-        subSegment.branchAnchorLongitudinal
-      );
-      subSegment.rotation = segment.rotation + subSegment.branchAnchorAngle;
 
-      if (maxDepth >= 0 && segment.length > (1+maxDepth) * 3) {
-        this.growSegmentsRecursively(subSegment, dtSeconds * 0.8, maxDepth - 1);
+      if (segment.length > 12 / (depth - 0.2)) {
+        this.growSegmentsRecursively(subSegment, dtSeconds * 0.8, depth + 1);
       }
     }
   }

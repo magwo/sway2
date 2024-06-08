@@ -42,13 +42,14 @@ export class SceneComponent {
     // TODO: Maybe don't use getRandom stuff in signals?
     // TODO: Seed with proper seed function etc
     const rootGenerator = new RandomGenerator([Math.round(1000000*Math.random()), 2, 3, 4]);
+    // const rootGenerator = new RandomGenerator([1, 2, 3, 4]);
 
     const plantsGenerator = rootGenerator.getDerivedGenerator(0);
     this.gradientGenerator = rootGenerator.getDerivedGenerator(1);
     const genesGenerator = plantsGenerator.getDerivedGenerator(0);
 
     this.genes = PlantGenes.generateNew(genesGenerator);
-    const plantCount = 3;
+    const plantCount = 1;
     // const plantCount = plantsGenerator.getInteger(4, 6);
 
     // TODO: Maybe use a signal, maybe not

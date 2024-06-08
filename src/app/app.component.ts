@@ -13,7 +13,7 @@ import { Time } from './app';
 export class AppComponent {
   title = 'Sway 2';
 
-  growSpeed = signal(0);
+  growSpeed = signal(200);
   time = signal<Time>({ currentTime: 0, previousTime: 0 });
 
   playSlow() {
@@ -40,7 +40,7 @@ export class AppComponent {
       if (this.growSpeed() > 0) {
         this.time.update((t) => {
           return {
-            currentTime: Math.min(130, t.currentTime + (1/60) * this.growSpeed()),
+            currentTime: Math.min(90, t.currentTime + (1/60) * this.growSpeed()),
             previousTime: t.currentTime,
           }
         });
