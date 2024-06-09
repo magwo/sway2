@@ -1,5 +1,7 @@
 export const TWO_PI = Math.PI * 2;
 export const QUARTER_CIRCLE = Math.PI / 2;
+export const EIGTH_CIRCLE = Math.PI / 4;
+export const SIXTEENTH_CIRCLE = Math.PI / 8;
 export const HALF_CIRCLE = Math.PI;
 export const FULL_CIRCLE = TWO_PI;
 

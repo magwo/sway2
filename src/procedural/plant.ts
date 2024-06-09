@@ -1,6 +1,7 @@
 import { max } from 'rxjs';
 import { PlantGenes } from './plant-genes';
 import {
+  EIGTH_CIRCLE,
   FULL_CIRCLE,
   Position,
   PositionMath,
@@ -109,7 +110,7 @@ export class Plant {
       0,
       'root',
       0,
-      -QUARTER_CIRCLE + generator.getQuadraticDistribution(-0.2, 0.2)
+      -QUARTER_CIRCLE + genes.data.crookedness * generator.getQuadraticDistribution(-EIGTH_CIRCLE, EIGTH_CIRCLE)
     );
 
     this.planBranches();
@@ -129,24 +130,25 @@ export class Plant {
   }
 
   planBranches() {
-    this.planBranchesRecursively(this.rootSegment, this.genes.data.maxBranchDepth);
+    this.planBranchesRecursively(this.rootSegment, 1);
   }
 
   private planBranchesRecursively(
     segment: PlantSegment,
-    maxDepth: number
+    depth: number,
   ) {
-    placeBranches(segment, this.generator, this.genes.data);
+    placeBranches(segment, this.generator, this.genes.data, depth);
 
-    if(maxDepth > 1) {
+    if(depth <= this.genes.data.maxBranchDepth) {
       for (const subSegment of segment.branches) {
-        this.planBranchesRecursively(subSegment, maxDepth - 1)
+        this.planBranchesRecursively(subSegment, depth + 1);
       }
     }
   }
 
 
   grow(dtSeconds: number) {
+    // TODO: Also animate tree
     // Don't grow too large timesteps
     let remainingSeconds = dtSeconds;
     const maxStepSize = 1/60;
@@ -162,12 +164,15 @@ export class Plant {
     dtSeconds: number,
     depth: number
   ) {
+    // TODO: Iron out what the target size/age is actually
     const slowDown = Math.min(1, 30 / (0.01 + segment.length * segment.width));
     dtSeconds *= slowDown;
     segment.length += dtSeconds;
     segment.width += dtSeconds * 0.07;
-    segment.branchAnchorAngle +=
-      0.2 * (-0.5 * dtSeconds + dtSeconds * Math.random());
+
+    // This causes the tree to move a bit during growth:
+    // segment.branchAnchorAngle +=
+    //   0.2 * (-0.5 * dtSeconds + dtSeconds * Math.random());
 
     if (segment.parent) {
       segment.position = segment.parent.getBranchPosition(
@@ -179,7 +184,6 @@ export class Plant {
     }
 
     for (const subSegment of segment.branches) {
-
       if (segment.length > 12 / (depth - 0.2)) {
         this.growSegmentsRecursively(subSegment, dtSeconds * 0.8, depth + 1);
       }

@@ -1,4 +1,5 @@
 import { END_WIDTH_FACTOR, Plant, PlantSegment } from '../../../procedural/plant';
+import { PlantGeneData } from '../../../procedural/plant-genes';
 
 function approxEqual(n1: number, n2: number) {
   return Math.abs(n1 - n2) < 0.000001;
@@ -126,22 +127,76 @@ export function renderSegmentsRecursively(segment: PlantSegment): string {
   return path;
 }
 
-function flower(segment: PlantSegment) {
+// 🍀
+function leaf(segment: PlantSegment) {
+  if (segment.length <= 0) {
+    return '';
+  }
   const pos = segment.position;
-  return `<circle cx="${pos.x}" cy="${pos.y}" r="0.5" />`;
+  return `<g transform="translate(${pos.x}, ${pos.y}) scale(${1 + segment.length / 20})"><text text-anchor="middle" dominant-baseline="text-top">🍀</text></g>`;
+  // return `<circle cx="${pos.x}" cy="${pos.y}" r="0.5" />`;
+}
+
+export function renderLeaves(plant: Plant): string {
+  return renderLeavesRecursively(plant.rootSegment, plant.genes.data);
+}
+
+export function renderLeavesRecursively(segment: PlantSegment, genes: PlantGeneData): string {
+  let markup = '';
+  for (const subSegment of segment.branches) {
+    if (subSegment.type === 'leaf') {
+      markup += leaf(subSegment);
+    }
+    markup += renderLeavesRecursively(subSegment, genes);
+  }
+  return markup;
+}
+
+function flower(segment: PlantSegment) {
+  if (segment.length <= 0) {
+    return '';
+  }
+  const pos = segment.position;
+  return `<g transform="translate(${pos.x}, ${pos.y}) scale(${1 + segment.length / 20})"><text text-anchor="middle" dominant-baseline="central">🌸</text></g>`;
+  // return `<circle cx="${pos.x}" cy="${pos.y}" r="0.5" />`;
 }
 
 export function renderFlowers(plant: Plant): string {
-  return renderFlowersRecursively(plant.rootSegment);
+  return renderFlowersRecursively(plant.rootSegment, plant.genes.data);
 }
 
-export function renderFlowersRecursively(segment: PlantSegment): string {
+export function renderFlowersRecursively(segment: PlantSegment, genes: PlantGeneData): string {
   let markup = '';
   for (const subSegment of segment.branches) {
     if (subSegment.type === 'flower') {
       markup += flower(subSegment);
     }
-    markup += renderFlowersRecursively(subSegment);
+    markup += renderFlowersRecursively(subSegment, genes);
+  }
+  return markup;
+}
+
+
+function fruit(segment: PlantSegment) {
+  if (segment.length <= 0) {
+    return '';
+  }
+  const pos = segment.position;
+  return `<g transform="translate(${pos.x}, ${pos.y}) scale(${1 + segment.length / 20})"><text text-anchor="middle" dominant-baseline="hanging">🍋</text></g>`;
+  // return `<circle cx="${pos.x}" cy="${pos.y}" r="0.5" />`;
+}
+
+export function renderFruits(plant: Plant): string {
+  return renderFruitsRecursively(plant.rootSegment, plant.genes.data);
+}
+
+export function renderFruitsRecursively(segment: PlantSegment, genes: PlantGeneData): string {
+  let markup = '';
+  for (const subSegment of segment.branches) {
+    if (subSegment.type === 'fruit') {
+      markup += fruit(subSegment);
+    }
+    markup += renderFruitsRecursively(subSegment, genes);
   }
   return markup;
 }

@@ -1,7 +1,7 @@
 import { Component, computed, effect, input } from '@angular/core';
 import { Plant } from '../../../procedural/plant';
 import { Time } from '../../app';
-import { renderFlowers, renderPlantBranchesPath } from './plant-svg';
+import { renderFlowers, renderFruits, renderLeaves, renderPlantBranchesPath } from './plant-svg';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
@@ -31,10 +31,22 @@ export class PlantComponent {
     return renderPlantBranchesPath(plant);
   });
 
+  leavesMarkup = computed<SafeHtml>(() => {
+    const time = this.time();
+    const plant = this.plant();
+    return this.sanitizer.bypassSecurityTrustHtml(renderLeaves(plant));
+  });
+
   flowersMarkup = computed<SafeHtml>(() => {
     const time = this.time();
     const plant = this.plant();
     return this.sanitizer.bypassSecurityTrustHtml(renderFlowers(plant));
+  });
+
+  fruitsMarkup = computed<SafeHtml>(() => {
+    const time = this.time();
+    const plant = this.plant();
+    return this.sanitizer.bypassSecurityTrustHtml(renderFruits(plant));
   });
 
   constructor(private sanitizer: DomSanitizer) {

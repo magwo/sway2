@@ -3,6 +3,8 @@
     <svg:path class="shadow" fill="url(#shadowGradient)" [attr.d]="branchesPath()" />
 </svg:g>
 
-<svg:path fill="url(#colorGradientAdditional)" stroke="black" stroke-width="0.0" [attr.d]="branchesPath()" />
+<svg:path fill="url(#colorGradientAdditional)" stroke="black" stroke-width="0.0" paint-order="stoke-under" [attr.d]="branchesPath()" />
 
+<svg:g class="fruits" [innerHTML]="fruitsMarkup()" />
+<svg:g class="leaves" [innerHTML]="leavesMarkup()" />
 <svg:g class="flowers" [innerHTML]="flowersMarkup()" />

@@ -49,8 +49,8 @@ export class SceneComponent {
     const genesGenerator = plantsGenerator.getDerivedGenerator(0);
 
     this.genes = PlantGenes.generateNew(genesGenerator);
-    const plantCount = 1;
-    // const plantCount = plantsGenerator.getInteger(4, 6);
+    const plantCount = 3;
+    // const plantCount = plantsGenerator.getInteger(4, 5);
 
     // TODO: Maybe use a signal, maybe not
     this.plants = [...Array(plantCount)].map((_, i) => {
@@ -58,8 +58,8 @@ export class SceneComponent {
       const alternator = i % 2 === 0 ? -1 : 1;
       return new Plant(
         {
-          x: 50 + 30 * Math.ceil(i / 2) * alternator,
-          y: 90 + 5 * Math.random(),
+          x: 100 + 60 * Math.ceil(i / 2) * alternator,
+          y: 150 + 10 * Math.random(),
         },
         this.genes,
         plantGenerator
@@ -75,7 +75,7 @@ export class SceneComponent {
   protected primaryColorGradient = computed<[HslaColor, HslaColor]>(() => {
     const themeCounter = this.themeCounter();
 
-    const hue1 = this.gradientGenerator.getInteger(0, 360)
+    const hue1 = this.gradientGenerator.getInteger(0, 359)
     const hue2 = hue1 + 10 + this.gradientGenerator.getInteger(360-10*2);
     const saturation = this.gradientGenerator.getInteger(60, 100) * this.generalSaturationMultiplier();
     const lightness = this.gradientGenerator.getInteger(30, 60);
@@ -89,7 +89,7 @@ export class SceneComponent {
   protected additionalColorGradient = computed<[HslaColor, HslaColor]>(() => {
     const themeCounter = this.themeCounter();
 
-    const hue = this.gradientGenerator.getInteger(0, 360)
+    const hue = this.gradientGenerator.getInteger(0, 359)
     const saturation = this.gradientGenerator.getInteger(60, 100) * this.generalSaturationMultiplier();
     const lightness = this.gradientGenerator.getInteger(30, 60);
     

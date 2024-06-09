@@ -1,39 +1,104 @@
 import { PlantSegment, PlantSegmentType } from './plant';
 import { PlantGeneData } from './plant-genes';
-import { QUARTER_CIRCLE } from './position';
+import {
+  EIGTH_CIRCLE,
+  HALF_CIRCLE,
+  QUARTER_CIRCLE,
+  SIXTEENTH_CIRCLE,
+} from './position';
 import { RandomGenerator } from './random';
 
-const GOLDEN_RATIO_FACTOR = 0.6180469716;
+function getBranchRotation(
+  branchNumber: number,
+  generator: RandomGenerator,
+  genes: PlantGeneData
+): number {
+  const uniformity = genes.uniformity;
+  const balance = genes.balance;
+  // TODO: Don't always start on the same side - it causes unintentional similarity
+  let evenOddMultiplier = branchNumber % 2 === 0 ? -1 : 1;
+  if (balance < generator.get()) {
+    // Balance failed - switch side
+    console.log('Balance failed');
+    evenOddMultiplier *= generator.getBool() ? -1 : 1;
+  }
+
+  const minRot = SIXTEENTH_CIRCLE;
+  const maxRot = Math.max(
+    minRot,
+    SIXTEENTH_CIRCLE,
+    HALF_CIRCLE / (branchNumber + 1)
+  );
+  const rotation = generator.getFloat(
+    minRot * evenOddMultiplier,
+    maxRot * evenOddMultiplier
+  );
+  return rotation;
+}
 
 export function placeBranches(
   segment: PlantSegment,
   generator: RandomGenerator,
   genes: PlantGeneData,
+  branchDepth: number
 ) {
-  const branchCount = Math.round(
+    const isAtDeepestDepth = branchDepth === genes.maxBranchDepth;
+  const branchCount = isAtDeepestDepth ? 5 : Math.round(
     generator.getFloat(genes.branchCount - 0.5, genes.branchCount + 0.5)
   );
 
-  while (segment.branches.length <= branchCount) {
-    let anchorLongitudinal = generator.getFloat(GOLDEN_RATIO_FACTOR - 0.2, 1.0);
-    let anchorRotation = generator.getFloat(-QUARTER_CIRCLE, QUARTER_CIRCLE);
-    let type: PlantSegmentType = 'branch';
+  const startLongitudinal = 0.2;
+  const distanceLongitudinal = 1.0 - startLongitudinal;
+
+  let anchorLongitudinal: number,
+    anchorRotation: number,
+    type: PlantSegmentType;
+  for (let i = 0; i < branchCount; i++) {
+    const factor = i / branchCount;
+    const halfStepSize = 0.5 / branchCount;
+
+    if (branchDepth === genes.maxBranchDepth) {
+      if (i === 0) {
+        type = 'leaf';
+        anchorLongitudinal = 1;
+      } else {
+        type = generator.selectOne(['leaf', 'flower', 'fruit']);
+        anchorLongitudinal =
+        0.2 +
+        distanceLongitudinal * factor +
+        (1 - genes.uniformity) *
+          generator.getFloat(-halfStepSize, halfStepSize);
+      }
+      anchorRotation = generator.getFloat(-EIGTH_CIRCLE, +EIGTH_CIRCLE);
+    } else if (i === 0) {
+      // Make first branch stick to top of trunk, with limited rotation
+      anchorLongitudinal = 1;
+      anchorRotation =
+        genes.crookedness * generator.getFloat(-EIGTH_CIRCLE, +EIGTH_CIRCLE);
+      type = 'main_branch';
+    } else {
+      anchorLongitudinal =
+        startLongitudinal +
+        distanceLongitudinal * factor +
+        (1 - genes.uniformity) *
+          generator.getFloat(-halfStepSize, halfStepSize);
+      anchorRotation = getBranchRotation(
+        i,
+        generator,
+        genes
+      );
+      type = 'branch';
+    }
 
     // TODO: Flower/fruit/leaf support
     //   if (maxDepth <= 1) {
-    //     type = 'flower';
-    //     anchorLongitudinal = 1;
 
-    if (segment.branches.length === 0) {
-      // Make first branch stick to top of trunk
-      anchorLongitudinal = 1;
-      anchorRotation /= 3;
-      type = 'main_branch';
-    }
+    console.log('Long', anchorLongitudinal, 'Rotation', anchorRotation);
+
     segment.branches.push(
       new PlantSegment(
         segment,
-        // Start with zeroes, update position/rotation below
+        // Start with zeroes, update position/rotation later
         { x: 0, y: 0 },
         0,
         0,
