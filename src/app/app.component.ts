@@ -48,6 +48,11 @@ export class AppComponent {
     this.setNewSearchParam('genes', newGenes);
   }
 
+  newTrees() {
+    const currentOffset = this.plantOffset();
+    this.setNewSearchParam('offset', (currentOffset + 10).toString());
+  }
+
   private setNewSearchParam(key: string, value: string) {
     const searchParams = this.searchParams();
     const newSearchParams = new URLSearchParams(searchParams.toString());
@@ -74,6 +79,11 @@ export class AppComponent {
   theme = computed<string>(() => {
     const searchParams = this.searchParams();
     return searchParams.get('theme') ?? '';
+  });
+
+  plantOffset = computed<number>(() => {
+    const searchParams = this.searchParams();
+    return parseInt(searchParams.get('offset') ?? '0');
   });
 
 

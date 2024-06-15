@@ -35,6 +35,8 @@ export class SceneComponent {
   genesSeed = input.required<string>();
   themeSeed = input.required<string>();
 
+  plantCountOffset = input.required<number>();
+
   genesGenerator = computed<RandomGenerator>(() => {
     return new RandomGenerator(this.genesSeed());
   });
@@ -55,13 +57,14 @@ export class SceneComponent {
     const genes = this.genes();
     const genesGenerator = this.genesGenerator();
     const plantCount = 3;
+    const countOffset = this.plantCountOffset();
 
     const preGrowToAge = untracked(() => {
       return this.time().currentTime;
     });
 
     return [...Array(plantCount)].map((_, i) => {
-      const plantGenerator = genesGenerator.getDerivedGenerator(i);
+      const plantGenerator = genesGenerator.getDerivedGenerator(countOffset + i);
       const alternator = i % 2 === 0 ? -1 : 1;
       const plant = new Plant(
         {

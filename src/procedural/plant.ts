@@ -208,7 +208,7 @@ export class Plant {
     const slowDown = Math.min(1, 30 / (0.01 + segment.length * segment.width));
     dtSeconds *= slowDown;
     segment.length += dtSeconds;
-    segment.width += dtSeconds * 0.07;
+    segment.width += dtSeconds * 0.07 / this.genes.data.slimness;
 
     if (segment.parent) {
       segment.position = segment.parent.getBranchPosition(

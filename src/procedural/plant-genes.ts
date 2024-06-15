@@ -50,13 +50,13 @@ export class PlantGenes {
     const g = generator;
     return {
       baseSize: g.getLinearDistribution(0.4, 0.8),
-      slimness: g.getLinearDistribution(0.6, 1.4),
+      slimness: g.getLinearDistribution(0.3, 1.9),
       crookedness: g.getLinearDistribution(0.05, 1.0),
       uniformity: g.getLinearDistribution(0.2, 0.99),
       balance: g.getLinearDistribution(0.6, 0.99),
       stiffness: g.getLinearDistribution(0.5, 1.0),
       branchCount: g.getLinearDistribution(1.8, 6.0),//8
-      maxBranchDepth: g.getInteger(2, 4), //5
+      maxBranchDepth: g.getInteger(3, 4), //5
       branchRoundness: g.getLinearDistribution(-0.5, 1.0),
       leafSize: g.getQuadraticDistribution(50, 150),
       flowerSize: g.getQuadraticDistribution(40, 140),
