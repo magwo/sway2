@@ -21,7 +21,7 @@ function getBranchRotation(
   evenOddMultiplier *= startSideMultiplier;
   if (balance < generator.get()) {
     // Balance failed - switch side
-    console.log('Balance failed');
+    // console.log('Balance failed');
     evenOddMultiplier *= generator.getBool() ? -1 : 1;
   }
 

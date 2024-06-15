@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, untracked } from '@angular/core';
 import { PlantComponent } from './plant/plant.component';
 import { RandomGenerator } from '../../procedural/random';
 import { Plant } from '../../procedural/plant';
@@ -56,10 +56,14 @@ export class SceneComponent {
     const genesGenerator = this.genesGenerator();
     const plantCount = 3;
 
+    const preGrowToAge = untracked(() => {
+      return this.time().currentTime;
+    });
+
     return [...Array(plantCount)].map((_, i) => {
       const plantGenerator = genesGenerator.getDerivedGenerator(i);
       const alternator = i % 2 === 0 ? -1 : 1;
-      return new Plant(
+      const plant = new Plant(
         {
           x: 100 + 60 * Math.ceil(i / 2) * alternator,
           y: 150 + 10 * Math.random(),
@@ -67,6 +71,8 @@ export class SceneComponent {
         genes,
         plantGenerator
       );
+      plant.preGrow(preGrowToAge);
+      return plant;
     });
   });
 

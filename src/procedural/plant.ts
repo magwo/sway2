@@ -11,6 +11,7 @@ import { RandomGenerator } from './random';
 import { placeBranches } from './branch-placer';
 
 const GROWTH_TIME_SECONDS = 90;
+const MAX_STEP_SIZE_SECONDS = 1/60;
 export const END_WIDTH_FACTOR = 0.5;
 export const BEND_FACTOR_MAIN_BRANCH = 0.4;
 export const BEND_FACTOR_SIDE_BRANCHES = 1.0;
@@ -101,7 +102,7 @@ export class PlantSegment {
 }
 
 export class Plant {
-  public readonly age = 0;
+  public age = 0;
   public readonly rootSegment: PlantSegment;
 
   constructor(public position: Position, public readonly genes: PlantGenes, private generator: RandomGenerator) {
@@ -153,15 +154,24 @@ export class Plant {
 
 
   simulate(dtSeconds: number, timeSeconds: number) {
-    // TODO: Also animate tree
     // Don't grow too large timesteps
     let remainingSeconds = dtSeconds;
-    const maxStepSize = 1/60;
     while (remainingSeconds > 0) {
-      const toStep = Math.min(remainingSeconds, maxStepSize);
-      this.growSegmentsRecursively(this.rootSegment, toStep, timeSeconds, 1);
+      const toStep = Math.min(remainingSeconds, MAX_STEP_SIZE_SECONDS);
+      this.growSegmentsRecursively(this.rootSegment, toStep, 1);
       this.animateRecursively(this.rootSegment, dtSeconds, timeSeconds, BEND_FACTOR_MAIN_BRANCH);
-      remainingSeconds -= maxStepSize;
+      remainingSeconds -= MAX_STEP_SIZE_SECONDS;
+      this.age += toStep;
+    }
+  }
+
+  preGrow(targetAge: number) {
+    let remainingSeconds = Math.min(GROWTH_TIME_SECONDS, targetAge);
+    while (remainingSeconds > 0) {
+      const toStep = Math.min(remainingSeconds, MAX_STEP_SIZE_SECONDS);
+      this.growSegmentsRecursively(this.rootSegment, toStep, 1);
+      remainingSeconds -= MAX_STEP_SIZE_SECONDS;
+      this.age += toStep;
     }
   }
 
@@ -189,10 +199,9 @@ export class Plant {
   private growSegmentsRecursively(
     segment: PlantSegment,
     dtSeconds: number,
-    timeSeconds: number,
     depth: number
   ) {
-    if (timeSeconds > GROWTH_TIME_SECONDS) {
+    if (this.age > GROWTH_TIME_SECONDS) {
       return;
     }
     // TODO: Iron out what the target size/age is actually
@@ -213,7 +222,7 @@ export class Plant {
     for (const subSegment of segment.branches) {
       if (segment.length > 12 / (depth - 0.2)) {
         // TODO: Maybe don't multiply dt - instead have a growth per segment
-        this.growSegmentsRecursively(subSegment, dtSeconds * 0.8, timeSeconds, depth + 1);
+        this.growSegmentsRecursively(subSegment, dtSeconds * 0.8, depth + 1);
       }
     }
   }

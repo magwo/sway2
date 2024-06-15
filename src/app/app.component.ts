@@ -39,19 +39,24 @@ export class AppComponent {
   }
 
   newTheme() {
-    // TODO: Avoid reloading page
     const newTheme = random32BitsHex();
-    const searchParams = this.searchParams();
-    searchParams.set('theme', newTheme);
-    this.document.location.search = searchParams.toString();
+    this.setNewSearchParam('theme', newTheme);
   }
 
   newGenes() {
-    // TODO: Avoid reloading page
-    const newTheme = random32BitsHex();
+    const newGenes = random32BitsHex();
+    this.setNewSearchParam('genes', newGenes);
+  }
+
+  private setNewSearchParam(key: string, value: string) {
     const searchParams = this.searchParams();
-    searchParams.set('genes', newTheme);
-    this.document.location.search = searchParams.toString();
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.set(key, value);
+    this.searchParams.set(newSearchParams);
+
+    const location = new URL(this.document.location.toString());
+    location.search = newSearchParams.toString();
+    window.history.pushState({}, '', location);
   }
 
   searchParams = signal(new URLSearchParams(this.document.location.search));
