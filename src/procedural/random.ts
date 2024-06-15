@@ -1,45 +1,4 @@
-function simpleFastCounter32(
-  a: number,
-  b: number,
-  c: number,
-  d: number
-): () => ZeroOneFloat {
-  // This is a pseudo random number generator using a 128-bit seed (4 integer numbers)
-  return function () {
-    a |= 0;
-    b |= 0;
-    c |= 0;
-    d |= 0;
-    let t = (((a + b) | 0) + d) | 0;
-    d = (d + 1) | 0;
-    a = b ^ (b >>> 9);
-    b = (c + (c << 3)) | 0;
-    c = (c << 21) | (c >>> 11);
-    c = (c + t) | 0;
-    return (t >>> 0) / 4294967296;
-  };
-}
-
-// FROM SOURCE: https://stackoverflow.com/questions/521295/seeding-the-random-number-generator-in-javascript
-//   const seedgen = () => (Math.random()*2**32)>>>0;
-//   const getRand = simpleFastCounter32(seedgen(), seedgen(), seedgen(), seedgen());
-//   for(let i=0; i<10; i++) console.log(getRand());
-
-export type Seed = [number, number, number, number];
-export type ZeroOneFloat = number;
-
-function getInteger32(n: ZeroOneFloat) {
-  return (n * 2 ** 32) >>> 0;
-}
-
-function getSeedArray(rnd: () => ZeroOneFloat): Seed {
-  return [
-    getInteger32(rnd()),
-    getInteger32(rnd()),
-    getInteger32(rnd()),
-    getInteger32(rnd()),
-  ];
-}
+import { ZeroOneFloat, getCyrb128Seed, getInteger32, getSeedArray, simpleFastCounter32 } from "./hash.math";
 
 export class RandomGenerator {
   public get: () => ZeroOneFloat;
@@ -79,19 +38,11 @@ export class RandomGenerator {
    * @returns A new generator derived from the parent seed and order number. The same parent seed and order number will yield identical derived generators.
    */
   public getDerivedGenerator(order: number) {
-    const seed = this.seed;
-    const seeder = simpleFastCounter32(...seed);
-    // Step the seeder at least once
-    for (let i = 0; i < order + 1; i++) {
-      seeder();
-    }
-    return new RandomGenerator(getSeedArray(seeder));
+    return new RandomGenerator(`${this.seedString}_${order}`);
   }
 
-  constructor(public readonly seed: Seed) {
-    if (seed.length !== 4) {
-      throw 'Incorrect seed size';
-    }
+  constructor(public readonly seedString: string) {
+    const seed = getCyrb128Seed(seedString);
     this.get = simpleFastCounter32(...seed);
   }
 }

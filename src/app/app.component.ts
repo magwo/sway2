@@ -1,7 +1,17 @@
-import { Component, signal } from '@angular/core';
+import { Component, Inject, computed, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SceneComponent } from './scene/scene.component';
 import { Time } from './app';
+import { DOCUMENT } from '@angular/common';
+
+function random32BitsHex() {
+  const rndHex = (() => {
+    return Math.floor(Math.random() * 16).toString(16);
+  });
+
+  return `${rndHex()}${rndHex()}${rndHex()}${rndHex()}${rndHex()}${rndHex()}${rndHex()}${rndHex()}`;
+}
+
 
 @Component({
   selector: 'app-root',
@@ -29,12 +39,40 @@ export class AppComponent {
   }
 
   newTheme() {
-    this.themeCounter.update((tc => tc+1));
+    // TODO: Avoid reloading page
+    const newTheme = random32BitsHex();
+    const searchParams = this.searchParams();
+    searchParams.set('theme', newTheme);
+    this.document.location.search = searchParams.toString();
   }
 
-  themeCounter = signal(10000*Math.random());
+  newGenes() {
+    // TODO: Avoid reloading page
+    const newTheme = random32BitsHex();
+    const searchParams = this.searchParams();
+    searchParams.set('genes', newTheme);
+    this.document.location.search = searchParams.toString();
+  }
 
-  constructor() {
+  searchParams = signal(new URLSearchParams(this.document.location.search));
+
+  genes = computed<string>(() => {
+    const searchParams = this.searchParams();
+    return searchParams.get('genes') ?? '';
+  });
+
+  geneOverrides = computed<string | null>(() => {
+    const searchParams = this.searchParams();
+    return searchParams.get('geneOverrides') ?? '';
+  });
+
+  theme = computed<string>(() => {
+    const searchParams = this.searchParams();
+    return searchParams.get('theme') ?? '';
+  });
+
+
+  constructor(@Inject(DOCUMENT) private document: Document) {
     // TODO: Use requestAnimationFrame instead
     setInterval(() => {
       if (this.growSpeed() > 0) {

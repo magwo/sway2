@@ -15,8 +15,6 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   }
 })
 export class PlantComponent {
-  // TODO: Could support rendering multiple plants on one svg path
-  // For different/improved visuals with gradients, alpha etc.
   plant = input.required<Plant>();
   time = input.required<Time>();
 

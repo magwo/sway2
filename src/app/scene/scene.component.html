@@ -54,7 +54,7 @@
     <circle style="mix-blend-mode: hard-light;" fill="url(#moonGradient)" cx="20" cy="50" r="10"></circle>
       
 
-    @for (plant of plants; track plant) {
+    @for (plant of plants(); track plant) {
         <g swayPlant [plant]="plant" [time]="time()"></g>
     }
 
@@ -62,5 +62,6 @@
 </svg>
 
 <div class="genes-container">
-    <sway-genes [genes]="genes"></sway-genes>
+    <p>Theme seed {{themeSeed()}}</p>
+    <sway-genes [genes]="genes()"></sway-genes>
 </div>
