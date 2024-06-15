@@ -10,8 +10,10 @@ import {
 import { RandomGenerator } from './random';
 import { placeBranches } from './branch-placer';
 
-const GROWTH_TIME_SECONDS = 10;
+const GROWTH_TIME_SECONDS = 90;
 export const END_WIDTH_FACTOR = 0.5;
+export const BEND_FACTOR_MAIN_BRANCH = 0.4;
+export const BEND_FACTOR_SIDE_BRANCHES = 1.0;
 
 export type PlantSegmentType = 'root' | 'main_branch' | 'branch' | 'leaf' | 'flower' | 'fruit';
 
@@ -27,8 +29,9 @@ export class PlantSegment {
     public length: number,
     public width: number,
     public type: PlantSegmentType,
-    public branchAnchorLongitudinal: number = 0,
-    public branchAnchorAngle: number = 0
+    public branchAnchorLongitudinal: number,
+    public branchAnchorAngle: number,
+    public readonly density: number
   ) {}
   // roundness: number;
 
@@ -102,6 +105,7 @@ export class Plant {
   public readonly rootSegment: PlantSegment;
 
   constructor(public position: Position, public readonly genes: PlantGenes, private generator: RandomGenerator) {
+    const rootDensity = 1.0;
     this.rootSegment = new PlantSegment(
         undefined,
       { x: 0, y: 0 },
@@ -110,7 +114,8 @@ export class Plant {
       0,
       'root',
       0,
-      -QUARTER_CIRCLE + genes.data.crookedness * generator.getQuadraticDistribution(-EIGTH_CIRCLE, EIGTH_CIRCLE)
+      -QUARTER_CIRCLE + genes.data.crookedness * generator.getQuadraticDistribution(-EIGTH_CIRCLE, EIGTH_CIRCLE),
+      rootDensity,
     );
 
     this.planBranches();
@@ -147,32 +152,54 @@ export class Plant {
   }
 
 
-  grow(dtSeconds: number) {
+  simulate(dtSeconds: number, timeSeconds: number) {
     // TODO: Also animate tree
     // Don't grow too large timesteps
     let remainingSeconds = dtSeconds;
     const maxStepSize = 1/60;
     while (remainingSeconds > 0) {
       const toStep = Math.min(remainingSeconds, maxStepSize);
-      this.growSegmentsRecursively(this.rootSegment, toStep, 1);
+      this.growSegmentsRecursively(this.rootSegment, toStep, timeSeconds, 1);
+      this.animateRecursively(this.rootSegment, dtSeconds, timeSeconds, BEND_FACTOR_MAIN_BRANCH);
       remainingSeconds -= maxStepSize;
     }
   }
 
+  private animateRecursively(segment: PlantSegment,
+    dtSeconds: number, timeSeconds: number, bendFactor: number) {
+
+      if (segment.parent) {
+        segment.position = segment.parent.getBranchPosition(
+          segment.branchAnchorLongitudinal
+        );
+        segment.rotation = segment.parent.rotation + segment.branchAnchorAngle;
+      } else {
+        segment.rotation = segment.branchAnchorAngle;
+      }
+
+      segment.rotation += 0.1 * bendFactor * Math.sin(10*timeSeconds / (segment.length * segment.density + .1));
+
+      for (let i=0; i<segment.branches.length; i++) {
+        const subSegment = segment.branches[i];
+        const bendFactor = i === 0 ? BEND_FACTOR_MAIN_BRANCH : BEND_FACTOR_SIDE_BRANCHES;
+        this.animateRecursively(subSegment, dtSeconds, timeSeconds, bendFactor);
+      }
+    }
+
   private growSegmentsRecursively(
     segment: PlantSegment,
     dtSeconds: number,
+    timeSeconds: number,
     depth: number
   ) {
+    if (timeSeconds > GROWTH_TIME_SECONDS) {
+      return;
+    }
     // TODO: Iron out what the target size/age is actually
     const slowDown = Math.min(1, 30 / (0.01 + segment.length * segment.width));
     dtSeconds *= slowDown;
     segment.length += dtSeconds;
     segment.width += dtSeconds * 0.07;
-
-    // This causes the tree to move a bit during growth:
-    // segment.branchAnchorAngle +=
-    //   0.2 * (-0.5 * dtSeconds + dtSeconds * Math.random());
 
     if (segment.parent) {
       segment.position = segment.parent.getBranchPosition(
@@ -185,7 +212,8 @@ export class Plant {
 
     for (const subSegment of segment.branches) {
       if (segment.length > 12 / (depth - 0.2)) {
-        this.growSegmentsRecursively(subSegment, dtSeconds * 0.8, depth + 1);
+        // TODO: Maybe don't multiply dt - instead have a growth per segment
+        this.growSegmentsRecursively(subSegment, dtSeconds * 0.8, timeSeconds, depth + 1);
       }
     }
   }

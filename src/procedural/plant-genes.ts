@@ -15,6 +15,7 @@ export type PlantGeneData = {
   flowerSize: number;
   flowerFrequency: number;
   fruitFrequency: number;
+  fruitType: string;
   // barkColor: Color;
   // leafColor: Color;
   // flowerColor: Color;
@@ -59,8 +60,9 @@ export class PlantGenes {
       branchRoundness: g.getLinearDistribution(-0.5, 1.0),
       leafSize: g.getQuadraticDistribution(50, 150),
       flowerSize: g.getQuadraticDistribution(40, 140),
-      flowerFrequency: g.getQuadraticDistribution(-0.2, 0.9),
-      fruitFrequency: g.getQuadraticDistribution(-0.2, 0.9),
+      flowerFrequency: g.getLinearDistribution(-0.1, 0.7),
+      fruitFrequency: g.getLinearDistribution(-0.1, 0.4),
+      fruitType: g.selectOne(['🥑', '🍋', '🍑', '🍊', '🍆', '🍒', '🍏', '🍇', '🍍', '🥝'])
       // barkColor: getRgbDeviation({ r: 90, g: 60, b: 20 }, 40, g),
       // leafColor: getRgbDeviation({ r: 62, g: 205, b: 4 }, 50, g),
       // flowerColor: getRgbDeviation({ r: 245, g: 221, b: 224 }, 100, g),

@@ -10,6 +10,7 @@ import { RandomGenerator } from './random';
 
 function getBranchRotation(
   branchNumber: number,
+  startSideMultiplier: number,
   generator: RandomGenerator,
   genes: PlantGeneData
 ): number {
@@ -17,6 +18,7 @@ function getBranchRotation(
   const balance = genes.balance;
   // TODO: Don't always start on the same side - it causes unintentional similarity
   let evenOddMultiplier = branchNumber % 2 === 0 ? -1 : 1;
+  evenOddMultiplier *= startSideMultiplier;
   if (balance < generator.get()) {
     // Balance failed - switch side
     console.log('Balance failed');
@@ -36,6 +38,16 @@ function getBranchRotation(
   return rotation;
 }
 
+function selectLeafType(genes: PlantGeneData, generator: RandomGenerator): 'leaf' | 'flower' | 'fruit' {
+  // TODO: More statistically correct distribution - this is naive
+  if (generator.get() < genes.flowerFrequency) {
+   return 'flower'; 
+  } else if(generator.get() < genes.fruitFrequency) {
+    return 'fruit';
+  }
+  return 'leaf';
+}
+
 export function placeBranches(
   segment: PlantSegment,
   generator: RandomGenerator,
@@ -47,6 +59,7 @@ export function placeBranches(
     generator.getFloat(genes.branchCount - 0.5, genes.branchCount + 0.5)
   );
 
+  const startSideMultiplier = generator.getBool() ? -1 : 1;
   const startLongitudinal = 0.2;
   const distanceLongitudinal = 1.0 - startLongitudinal;
 
@@ -62,7 +75,7 @@ export function placeBranches(
         type = 'leaf';
         anchorLongitudinal = 1;
       } else {
-        type = generator.selectOne(['leaf', 'flower', 'fruit']);
+        type = selectLeafType(genes, generator);
         anchorLongitudinal =
         0.2 +
         distanceLongitudinal * factor +
@@ -84,6 +97,7 @@ export function placeBranches(
           generator.getFloat(-halfStepSize, halfStepSize);
       anchorRotation = getBranchRotation(
         i,
+        startSideMultiplier,
         generator,
         genes
       );
@@ -93,8 +107,9 @@ export function placeBranches(
     // TODO: Flower/fruit/leaf support
     //   if (maxDepth <= 1) {
 
-    console.log('Long', anchorLongitudinal, 'Rotation', anchorRotation);
+    // console.log('Long', anchorLongitudinal, 'Rotation', anchorRotation);
 
+    const density = generator.getFloat(0.9, 1.1);
     segment.branches.push(
       new PlantSegment(
         segment,
@@ -105,7 +120,8 @@ export function placeBranches(
         0,
         type,
         anchorLongitudinal,
-        anchorRotation
+        anchorRotation,
+        density,
       )
     );
   }

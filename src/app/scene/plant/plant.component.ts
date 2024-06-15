@@ -55,7 +55,7 @@ export class PlantComponent {
       const plant = this.plant();
 
       if(time.currentTime !== time.previousTime) {
-        plant.grow(time.currentTime - time.previousTime);
+        plant.simulate(time.currentTime - time.previousTime, time.currentTime);
       }
     });
   }

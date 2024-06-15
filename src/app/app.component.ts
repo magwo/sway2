@@ -13,19 +13,19 @@ import { Time } from './app';
 export class AppComponent {
   title = 'Sway 2';
 
-  growSpeed = signal(200);
+  growSpeed = signal(0);
   time = signal<Time>({ currentTime: 0, previousTime: 0 });
 
   playSlow() {
-    this.growSpeed.update((g) => g !== 0 ? 0 : 0.5);
-  }
-
-  playNormal() {
     this.growSpeed.update((g) => g !== 0 ? 0 : 1);
   }
 
+  playNormal() {
+    this.growSpeed.update((g) => g !== 0 ? 0 : 10);
+  }
+
   playFast() {
-    this.growSpeed.update((g) => g !== 0 ? 0 : 5);
+    this.growSpeed.update((g) => g !== 0 ? 0 : 100);
   }
 
   newTheme() {
@@ -38,12 +38,15 @@ export class AppComponent {
     // TODO: Use requestAnimationFrame instead
     setInterval(() => {
       if (this.growSpeed() > 0) {
-        this.time.update((t) => {
-          return {
-            currentTime: Math.min(90, t.currentTime + (1/60) * this.growSpeed()),
-            previousTime: t.currentTime,
-          }
-        });
+        const currentTime = this.time().currentTime;
+        // const newCurrentTime = Math.min(90, this.time().currentTime + (1/60) * this.growSpeed());
+        const newCurrentTime = this.time().currentTime + (1/60) * this.growSpeed();
+        if (currentTime !== newCurrentTime) {
+          this.time.set({
+              currentTime: newCurrentTime,
+              previousTime: currentTime,
+            });
+        }
       }
     }, 1000/60);
   }
