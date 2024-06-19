@@ -23,7 +23,7 @@ function random32BitsHex() {
 export class AppComponent {
   title = 'Sway 2';
 
-  growSpeed = signal(0);
+  growSpeed = signal(10);
   time = signal<Time>({ currentTime: 0, previousTime: 0 });
 
   playSlow() {

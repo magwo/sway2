@@ -9,16 +9,16 @@ import {
 } from './position';
 import { RandomGenerator } from './random';
 import { placeBranches } from './branch-placer';
+import { TimeSeconds } from '../app/app';
 
-const GROWTH_TIME_SECONDS = 90;
-const MAX_STEP_SIZE_SECONDS = 1/60;
+const GROWTH_TIME: TimeSeconds = 90;
+const MAX_STEP_SIZE: TimeSeconds = 1/60;
 export const END_WIDTH_FACTOR = 0.5;
 export const BEND_FACTOR_MAIN_BRANCH = 0.4;
 export const BEND_FACTOR_SIDE_BRANCHES = 1.0;
 
 export type PlantSegmentType = 'root' | 'main_branch' | 'branch' | 'leaf' | 'flower' | 'fruit';
 
-// TODO: Maybe different types for different types of segments - trunk, branches, leaves?
 export class PlantSegment {
   branches: PlantSegment[] = [];
   isGrowing = false;
@@ -153,30 +153,33 @@ export class Plant {
   }
 
 
-  simulate(dtSeconds: number, timeSeconds: number) {
+  simulate(deltaTime: TimeSeconds, currentTime: TimeSeconds) {
     // Don't grow too large timesteps
-    let remainingSeconds = dtSeconds;
-    while (remainingSeconds > 0) {
-      const toStep = Math.min(remainingSeconds, MAX_STEP_SIZE_SECONDS);
-      this.growSegmentsRecursively(this.rootSegment, toStep, 1);
-      this.animateRecursively(this.rootSegment, dtSeconds, timeSeconds, BEND_FACTOR_MAIN_BRANCH);
-      remainingSeconds -= MAX_STEP_SIZE_SECONDS;
-      this.age += toStep;
-    }
+    // let remainingSeconds = dtSeconds;
+    // while (remainingSeconds > 0) {
+    //   const toStep = Math.min(remainingSeconds, MAX_STEP_SIZE_SECONDS);
+    //   this.growSegmentsRecursively(this.rootSegment, toStep, 1);
+    //   remainingSeconds -= MAX_STEP_SIZE_SECONDS;
+    //   this.age += toStep;
+    // }
+    this.growSegmentsRecursively(this.rootSegment, deltaTime, 1);
+    this.animateRecursively(this.rootSegment, deltaTime, currentTime, BEND_FACTOR_MAIN_BRANCH);
+    this.age += deltaTime;
   }
 
-  preGrow(targetAge: number) {
-    let remainingSeconds = Math.min(GROWTH_TIME_SECONDS, targetAge);
+  preGrow(targetAge: number, currentTime: TimeSeconds) {
+    let remainingSeconds = Math.min(GROWTH_TIME, targetAge);
     while (remainingSeconds > 0) {
-      const toStep = Math.min(remainingSeconds, MAX_STEP_SIZE_SECONDS);
+      const toStep = Math.min(remainingSeconds, MAX_STEP_SIZE);
       this.growSegmentsRecursively(this.rootSegment, toStep, 1);
-      remainingSeconds -= MAX_STEP_SIZE_SECONDS;
+      remainingSeconds -= MAX_STEP_SIZE;
       this.age += toStep;
     }
+    this.animateRecursively(this.rootSegment, 0, currentTime, BEND_FACTOR_MAIN_BRANCH);
   }
 
   private animateRecursively(segment: PlantSegment,
-    dtSeconds: number, timeSeconds: number, bendFactor: number) {
+    dtSeconds: TimeSeconds, currentTime: TimeSeconds, bendFactor: number) {
 
       if (segment.parent) {
         segment.position = segment.parent.getBranchPosition(
@@ -187,42 +190,35 @@ export class Plant {
         segment.rotation = segment.branchAnchorAngle;
       }
 
-      segment.rotation += 0.1 * bendFactor * Math.sin(10*timeSeconds / (segment.length * segment.density + .1));
+      // TODO: Remove apparent oscillation slowness during growth caused by frequency decrease when length increases
+      // Maybe by doing angular momentum simulation instead of time-dependent sinus rotation
+      segment.rotation += 0.1 * bendFactor * Math.sin(10*currentTime / (segment.length * segment.density + .1));
 
       for (let i=0; i<segment.branches.length; i++) {
         const subSegment = segment.branches[i];
         const bendFactor = i === 0 ? BEND_FACTOR_MAIN_BRANCH : BEND_FACTOR_SIDE_BRANCHES;
-        this.animateRecursively(subSegment, dtSeconds, timeSeconds, bendFactor);
+        this.animateRecursively(subSegment, dtSeconds, currentTime, bendFactor);
       }
     }
 
   private growSegmentsRecursively(
     segment: PlantSegment,
-    dtSeconds: number,
+    deltaTime: TimeSeconds,
     depth: number
   ) {
-    if (this.age > GROWTH_TIME_SECONDS) {
+    if (this.age > GROWTH_TIME) {
       return;
     }
     // TODO: Iron out what the target size/age is actually
-    const slowDown = Math.min(1, 30 / (0.01 + segment.length * segment.width));
-    dtSeconds *= slowDown;
-    segment.length += dtSeconds;
-    segment.width += dtSeconds * 0.07 / this.genes.data.slimness;
-
-    if (segment.parent) {
-      segment.position = segment.parent.getBranchPosition(
-        segment.branchAnchorLongitudinal
-      );
-      segment.rotation = segment.parent.rotation + segment.branchAnchorAngle;
-    } else {
-      segment.rotation = segment.branchAnchorAngle;
-    }
+    const slowDown = Math.min(1, 20 / (0.01 + segment.length));
+    deltaTime *= slowDown;
+    segment.length += deltaTime;
+    segment.width += deltaTime * 0.07 / this.genes.data.slimness;
 
     for (const subSegment of segment.branches) {
       if (segment.length > 12 / (depth - 0.2)) {
         // TODO: Maybe don't multiply dt - instead have a growth per segment
-        this.growSegmentsRecursively(subSegment, dtSeconds * 0.8, depth + 1);
+        this.growSegmentsRecursively(subSegment, deltaTime * 0.8, depth + 1);
       }
     }
   }

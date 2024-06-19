@@ -59,9 +59,10 @@ export class SceneComponent {
     const plantCount = 3;
     const countOffset = this.plantCountOffset();
 
-    const preGrowToAge = untracked(() => {
+    const currentTime = untracked(() => {
       return this.time().currentTime;
     });
+    const preGrowToAge = currentTime;
 
     return [...Array(plantCount)].map((_, i) => {
       const plantGenerator = genesGenerator.getDerivedGenerator(countOffset + i);
@@ -74,13 +75,10 @@ export class SceneComponent {
         genes,
         plantGenerator
       );
-      plant.preGrow(preGrowToAge);
+      plant.preGrow(preGrowToAge, currentTime);
       return plant;
     });
   });
-
-  constructor() {    
-  }
 
   protected generalSaturationMultiplier = computed<number>(() => {
     const gradientGenerator = this.gradientGenerator();

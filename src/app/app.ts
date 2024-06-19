@@ -1,4 +1,6 @@
+export type TimeSeconds = number;
+
 export type Time = {
-  previousTime: number;
-  currentTime: number;
+  previousTime: TimeSeconds;
+  currentTime: TimeSeconds;
 }
