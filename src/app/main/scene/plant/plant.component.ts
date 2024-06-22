@@ -1,7 +1,7 @@
-import { Component, computed, effect, input } from '@angular/core';
+import { Component, ElementRef, computed, effect, input } from '@angular/core';
 import { Plant } from '../../../../procedural/plant';
 import { Time } from '../../../common';
-import { renderFlowers, renderFruits, renderLeaves, renderPlantBranchesPath } from './plant-svg';
+import { renderFlowers, renderFruits, renderLeaves, renderPlantBranchesMarkup } from './plant-svg';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
@@ -26,28 +26,39 @@ export class PlantComponent {
   branchesPath = computed<string>(() => {
     const time = this.time();
     const plant = this.plant();
-    return renderPlantBranchesPath(plant);
+    return renderPlantBranchesMarkup(plant);
   });
 
-  leavesMarkup = computed<SafeHtml>(() => {
+  branchesMarkup = computed<SafeHtml>(() => {
     const time = this.time();
     const plant = this.plant();
-    return this.sanitizer.bypassSecurityTrustHtml(renderLeaves(plant));
+    return this.sanitizer.bypassSecurityTrustHtml(renderPlantBranchesMarkup(plant));
   });
 
-  flowersMarkup = computed<SafeHtml>(() => {
-    const time = this.time();
-    const plant = this.plant();
-    return this.sanitizer.bypassSecurityTrustHtml(renderFlowers(plant));
-  });
+  // leavesMarkup = computed<SafeHtml>(() => {
+  //   const time = this.time();
+  //   const plant = this.plant();
+  //   return this.sanitizer.bypassSecurityTrustHtml(renderLeaves(plant));
+  // });
 
-  fruitsMarkup = computed<SafeHtml>(() => {
-    const time = this.time();
-    const plant = this.plant();
-    return this.sanitizer.bypassSecurityTrustHtml(renderFruits(plant));
-  });
+  // flowersMarkup = computed<SafeHtml>(() => {
+  //   const time = this.time();
+  //   const plant = this.plant();
+  //   return this.sanitizer.bypassSecurityTrustHtml(renderFlowers(plant));
+  // });
 
-  constructor(private sanitizer: DomSanitizer) {
+  // fruitsMarkup = computed<SafeHtml>(() => {
+  //   const time = this.time();
+  //   const plant = this.plant();
+  //   return this.sanitizer.bypassSecurityTrustHtml(renderFruits(plant));
+  // });
+
+  constructor(private elRef:ElementRef, private sanitizer: DomSanitizer) {
+    // effect(() => {
+    //   // Crate SVG DOM on first render
+    //   const time = this.time();
+    //   const plant = this.plant();
+    // });
     effect(() => {
       const time = this.time();
       const plant = this.plant();

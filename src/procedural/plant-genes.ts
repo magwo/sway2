@@ -61,8 +61,8 @@ export class PlantGenes {
       uniformity: g.getLinearDistribution(0.2, 0.99),
       balance: g.getLinearDistribution(0.6, 0.99),
       stiffness: g.getLinearDistribution(0.5, 1.0),
-      branchCount: g.getLinearDistribution(1.8, 6.0),//8
-      maxBranchDepth: g.getInteger(3, 4), //5
+      branchCount: 8,//g.getLinearDistribution(1.8, 6.0),//8
+      maxBranchDepth: 5,// g.getInteger(3, 4), //5
       branchRoundness: g.getLinearDistribution(-0.5, 1.0),
       leafSize: g.getLinearDistribution(5, 15),
       leafElongation: g.getLinearDistribution(0.1, 4.0),
