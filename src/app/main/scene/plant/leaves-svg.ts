@@ -8,7 +8,7 @@ export function createSimpleLeafPath(): string {
     return `M ${0} ${0} L ${4} ${-2} L ${2} ${1} L ${5} ${5} L ${1} ${3} L ${0} ${8} L ${-1} ${3} L ${-5} ${5} L ${-2} ${1} L ${-4} ${-2} Z`;
 }
 
-export function createRadialArrowsLeafPath(numArrows: number, pointyness: ZeroOneFloat, elongation: number): string {
+export function createRadialArrowsLeafPath(numArrows: number, pointyness: ZeroOneFloat, elongation: number, defects: ZeroOneFloat): string {
     // TODO: Curved arrows
     const startAngle = -HALF_CIRCLE;
     const endAngle = HALF_CIRCLE;
@@ -20,7 +20,8 @@ export function createRadialArrowsLeafPath(numArrows: number, pointyness: ZeroOn
 
     let path = '';
     for (let i=0; i<numArrows; i++) {
-        const angle = startAngle + stepAngle * 0.5 + i * stepAngle;
+        const defectAngleError = (-0.1 + 0.2 * Math.sin(17*i)) * stepAngle * defects;
+        const angle = startAngle + stepAngle * 0.5 + i * stepAngle + defectAngleError;
         const pointFraction = i / (numArrows - 1);
         const pointLengthMultiplier = 1 + elongation * Math.sin(HALF_CIRCLE * pointFraction);
         const pointLength = POINT_LENGTH * pointLengthMultiplier;
@@ -30,7 +31,8 @@ export function createRadialArrowsLeafPath(numArrows: number, pointyness: ZeroOn
         const y = pointLength * Math.sin(angle);
 
         // Next inner point:
-        const innerAngle = angle + stepAngle * 0.5;
+        const defectInnerAngleError = (-0.1 + 0.2 * Math.sin(31*i)) * stepAngle * defects;
+        const innerAngle = angle + stepAngle * 0.5 + defectInnerAngleError;
         const innerFraction = (i + 0.5) / (numArrows - 1);
         const innerLengthMultiplier = 1 + elongation * Math.sin(HALF_CIRCLE * innerFraction);
         const innerLength = INNER_LENGTH * innerLengthMultiplier;

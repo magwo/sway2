@@ -16,6 +16,7 @@ export type PlantGeneData = {
   leafElongation: number;
   leafSubCount: number;
   leafSubPointyness: number;
+  leafDefects: number;
   flowerSize: Centimeters;
   flowerFrequency: number;
   fruitFrequency: number;
@@ -65,8 +66,9 @@ export class PlantGenes {
       branchRoundness: g.getLinearDistribution(-0.5, 1.0),
       leafSize: g.getLinearDistribution(5, 15),
       leafElongation: g.getLinearDistribution(0.1, 4.0),
-      leafSubCount: g.getInteger(4, 12),
-      leafSubPointyness: g.getLinearDistribution(0.01, 0.9),
+      leafSubCount: g.getInteger(7, 14),
+      leafSubPointyness: g.getLinearDistribution(0.01, 0.7),
+      leafDefects: g.getLinearDistribution(0.02, 0.4),
       flowerSize: g.getQuadraticDistribution(40, 140),
       flowerFrequency: g.getLinearDistribution(-0.1, 0.7),
       fruitFrequency: g.getLinearDistribution(-0.1, 0.4),

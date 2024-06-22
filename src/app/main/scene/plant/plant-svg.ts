@@ -129,7 +129,7 @@ function leaf(segment: PlantSegment, genes: PlantGeneData) {
   const rot = (segment.rotation)*360/6.283;
   
   // const path = `<path d="${createSimpleLeafPath()}" />`;
-  const path = `<path d="${createRadialArrowsLeafPath(genes.leafSubCount, genes.leafSubPointyness, genes.leafElongation)}" />`;
+  const path = `<path d="${createRadialArrowsLeafPath(genes.leafSubCount, genes.leafSubPointyness, genes.leafElongation, genes.leafDefects)}" />`;
   
   const cmMultiplier = 1 / 100;
   return `<g transform="translate(${pos.x}, ${pos.y}) scale(${segment.length * genes.leafSize * cmMultiplier}) rotate(${rot})">${path}</g>`;

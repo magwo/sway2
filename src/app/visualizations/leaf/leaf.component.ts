@@ -18,7 +18,7 @@ export class LeafComponent {
     // TODO: Support more than one type of leaf
     const genes = this.genes();
     const result = genes.map(g => {
-      const path = createRadialArrowsLeafPath(g.data.leafSubCount, g.data.leafSubPointyness, g.data.leafElongation);
+      const path = createRadialArrowsLeafPath(g.data.leafSubCount, g.data.leafSubPointyness, g.data.leafElongation, g.data.leafDefects);
       return {genes: g.data, path};
     });
     return result;
