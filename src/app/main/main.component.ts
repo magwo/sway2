@@ -22,16 +22,23 @@ export class MainComponent {
   growSpeed = signal(10);
   time = signal<Time>({ currentTime: 0, previousTime: 0 });
 
+  regrowthCounter = signal<number>(0);
+
   playSlow() {
-    this.growSpeed.update((g) => g !== 0 ? 0 : 3);
+    this.growSpeed.update((g) => g !== 3 ? 3 : 0);
   }
 
   playNormal() {
-    this.growSpeed.update((g) => g !== 0 ? 0 : 10);
+    this.growSpeed.update((g) => g !== 10 ? 10 : 0);
   }
 
   playFast() {
-    this.growSpeed.update((g) => g !== 0 ? 0 : 100);
+    this.growSpeed.update((g) => g !== 100 ? 100 : 0);
+  }
+
+  regrow() {
+    this.time.set({ currentTime: 0, previousTime: 0 });
+    this.regrowthCounter.update(val => val + 1);
   }
 
   newTheme() {

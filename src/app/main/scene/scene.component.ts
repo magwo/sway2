@@ -37,6 +37,8 @@ export class SceneComponent {
 
   plantCountOffset = input.required<number>();
 
+  regrowthCounter = input.required<number>();
+
   genesGenerator = computed<RandomGenerator>(() => {
     return new RandomGenerator(this.genesSeed());
   });
@@ -58,6 +60,7 @@ export class SceneComponent {
     const genesGenerator = this.genesGenerator();
     const plantCount = 1;
     const countOffset = this.plantCountOffset();
+    const regrowthCounter = this.regrowthCounter();
 
     const currentTime = untracked(() => {
       return this.time().currentTime;

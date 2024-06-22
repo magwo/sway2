@@ -1,13 +1,14 @@
 
 <main class="main">
-    <sway-scene [time]="time()" [genesSeed]="genes()" [themeSeed]="theme()" [plantCountOffset]="plantOffset()"></sway-scene>
+    <sway-scene [time]="time()" [genesSeed]="genes()" [themeSeed]="theme()" [plantCountOffset]="plantOffset()" [regrowthCounter]="regrowthCounter()"></sway-scene>
     <div class="controls">
       <h1>SWAY 2</h1>
       <p>By Magnus Wolffelt</p>
       <div class="pill-group">
-        <button class="pill" (click)="playSlow()">Grow slow</button>
-        <button class="pill" (click)="playNormal()">Grow normal</button>
-        <button class="pill" (click)="playFast()">Grow fast</button>
+        <button class="pill" (click)="playSlow()">Slow</button>
+        <button class="pill" (click)="playNormal()">Normal</button>
+        <button class="pill" (click)="playFast()">Fast</button>
+        <button class="pill" (click)="regrow()">Regrow</button>
         <button class="pill" (click)="newGenes()">New genes</button>
         <button class="pill" (click)="newTheme()">New theme</button>
         <button class="pill" (click)="newTrees()">New trees</button>

@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
 import { PlantGenes } from '../../../../procedural/plant-genes';
 import { TypeofPipe } from '../../../pipes';
 import { Color } from '../../../../procedural/color';
@@ -14,6 +14,8 @@ import { DecimalPipe } from '@angular/common';
 export class GenesComponent {
   genes = input.required<PlantGenes>();
 
+  isExpanded = signal(false);
+
   protected displayGenes = computed<{name: string, value: string | number}[]>(() => {
     const genes = this.genes();
     const entries = Object.entries(genes.data).map((keyValuePair) => {
@@ -23,4 +25,8 @@ export class GenesComponent {
     });
     return entries;
   });
+
+  toggleExpanded() {
+    this.isExpanded.update(val => !val);
+  }
 }

@@ -3,9 +3,13 @@
     background-color: rgba(0, 0, 0, 0.1);
     padding: 12px;
     border-radius: 12px;
+    min-width: 200px;
+
+    .toggle-button {
+        cursor: pointer;
+    }
 
     .definition-list {
-        min-width: 200px;
         font-size: 0.8rem;
         div {
             display: flex;
