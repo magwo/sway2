@@ -2,11 +2,10 @@ import { ZeroOneFloat } from "../../../../procedural/hash.math";
 import { HALF_CIRCLE, QUARTER_CIRCLE, SIXTEENTH_CIRCLE } from "../../../../procedural/position";
 import { Centimeters } from "../../../common";
 
-// NOTE: Leafs should have target size 0.1x0.1 meters, then scaled by renderer
+// NOTE: Leafs should have target size 10x10, then scaled by renderer to proper size
 
 export function createSimpleLeafPath(): string {
-    const cm = 1 / 100;
-    return `M ${0*cm} ${0*cm} L ${4*cm} ${-2*cm} L ${2*cm} ${1*cm} L ${5*cm} ${5*cm} L ${1*cm} ${3*cm} L ${0*cm} ${8*cm} L ${-1*cm} ${3*cm} L ${-5*cm} ${5*cm} L ${-2*cm} ${1*cm} L ${-4*cm} ${-2*cm} Z`;
+    return `M ${0} ${0} L ${4} ${-2} L ${2} ${1} L ${5} ${5} L ${1} ${3} L ${0} ${8} L ${-1} ${3} L ${-5} ${5} L ${-2} ${1} L ${-4} ${-2} Z`;
 }
 
 export function createRadialArrowsLeafPath(numArrows: number, pointyness: ZeroOneFloat, elongation: number): string {
@@ -15,7 +14,6 @@ export function createRadialArrowsLeafPath(numArrows: number, pointyness: ZeroOn
     const endAngle = HALF_CIRCLE;
     const stepSumAngle = startAngle - endAngle;
     const stepAngle = stepSumAngle / numArrows;
-    const cm = 1 / 100;
 
     const POINT_LENGTH = 6 / (1+elongation);
     const INNER_LENGTH = POINT_LENGTH * (1 - pointyness);
@@ -40,7 +38,7 @@ export function createRadialArrowsLeafPath(numArrows: number, pointyness: ZeroOn
         const y2 = innerLength * Math.sin(innerAngle);
         
         const command = i === 0 ? 'M' : 'L';
-        path += `${command} ${x*cm} ${y*cm} L ${x2*cm} ${y2*cm}`
+        path += `${command} ${x} ${y} L ${x2} ${y2}`
     }
     path += 'Z';
     return path;

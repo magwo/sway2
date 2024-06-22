@@ -23,7 +23,7 @@ export class MainComponent {
   time = signal<Time>({ currentTime: 0, previousTime: 0 });
 
   playSlow() {
-    this.growSpeed.update((g) => g !== 0 ? 0 : 1);
+    this.growSpeed.update((g) => g !== 0 ? 0 : 3);
   }
 
   playNormal() {

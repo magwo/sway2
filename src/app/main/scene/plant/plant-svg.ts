@@ -131,7 +131,8 @@ function leaf(segment: PlantSegment, genes: PlantGeneData) {
   // const path = `<path d="${createSimpleLeafPath()}" />`;
   const path = `<path d="${createRadialArrowsLeafPath(genes.leafSubCount, genes.leafSubPointyness, genes.leafElongation)}" />`;
   
-  return `<g transform="translate(${pos.x}, ${pos.y}) scale(${segment.length * genes.leafSize}) rotate(${rot})">${path}</g>`;
+  const cmMultiplier = 1 / 100;
+  return `<g transform="translate(${pos.x}, ${pos.y}) scale(${segment.length * genes.leafSize * cmMultiplier}) rotate(${rot})">${path}</g>`;
   // return `<g transform="translate(${pos.x}, ${pos.y}) scale(${1 + segment.length / 20}) rotate(${rot})"><text text-anchor="middle" dominant-baseline="text-top">🍀</text></g>`;
   // return `<circle cx="${pos.x}" cy="${pos.y}" r="0.5" />`;
 }
