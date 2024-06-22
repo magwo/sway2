@@ -39,7 +39,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - run: npm ci
-      - run: npm run build --if-present
+      - run: npm run build --base-href=/sway2/
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
