@@ -1,10 +1,10 @@
 import { Component, computed, input, untracked } from '@angular/core';
 import { PlantComponent } from './plant/plant.component';
-import { RandomGenerator } from '../../procedural/random';
-import { Plant } from '../../procedural/plant';
-import { Time } from '../app';
+import { RandomGenerator } from '../../../procedural/random';
+import { Plant } from '../../../procedural/plant';
+import { Time } from '../../common';
 import { GenesComponent } from './genes/genes.component';
-import { PlantGenes } from '../../procedural/plant-genes';
+import { PlantGenes } from '../../../procedural/plant-genes';
 
 class HslaColor {
   constructor(

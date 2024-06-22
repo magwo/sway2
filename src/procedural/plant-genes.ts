@@ -1,4 +1,4 @@
-import { Centimeters } from '../app/app';
+import { Centimeters } from '../app/common';
 import { Color, getRgbDeviation } from './color';
 import { RandomGenerator } from './random';
 

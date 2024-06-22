@@ -1,6 +1,6 @@
-import { ZeroOneFloat } from "../../../procedural/hash.math";
-import { HALF_CIRCLE, QUARTER_CIRCLE, SIXTEENTH_CIRCLE } from "../../../procedural/position";
-import { Centimeters } from "../../app";
+import { ZeroOneFloat } from "../../../../procedural/hash.math";
+import { HALF_CIRCLE, QUARTER_CIRCLE, SIXTEENTH_CIRCLE } from "../../../../procedural/position";
+import { Centimeters } from "../../../common";
 
 // NOTE: Leafs should have target size 0.1x0.1 meters, then scaled by renderer
 

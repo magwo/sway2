@@ -1,7 +1,7 @@
 // import { StringSink } from 'as-string-sink';
-import { END_WIDTH_FACTOR, Plant, PlantSegment } from '../../../procedural/plant';
-import { PlantGeneData } from '../../../procedural/plant-genes';
-import { EIGTH_CIRCLE, QUARTER_CIRCLE } from '../../../procedural/position';
+import { END_WIDTH_FACTOR, Plant, PlantSegment } from '../../../../procedural/plant';
+import { PlantGeneData } from '../../../../procedural/plant-genes';
+import { EIGTH_CIRCLE, QUARTER_CIRCLE } from '../../../../procedural/position';
 import { createRadialArrowsLeafPath, createSimpleLeafPath } from './leaves-svg';
 
 function approxEqual(n1: number, n2: number) {

@@ -1,6 +1,6 @@
 import { Component, computed, effect, input } from '@angular/core';
-import { Plant } from '../../../procedural/plant';
-import { Time } from '../../app';
+import { Plant } from '../../../../procedural/plant';
+import { Time } from '../../../common';
 import { renderFlowers, renderFruits, renderLeaves, renderPlantBranchesPath } from './plant-svg';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 

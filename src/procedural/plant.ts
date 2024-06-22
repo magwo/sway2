@@ -9,7 +9,7 @@ import {
 } from './position';
 import { RandomGenerator } from './random';
 import { placeBranches } from './branch-placer';
-import { TimeSeconds } from '../app/app';
+import { TimeSeconds } from '../app/common';
 
 const GROWTH_TIME: TimeSeconds = 90;
 const MAX_STEP_SIZE: TimeSeconds = 1/60;

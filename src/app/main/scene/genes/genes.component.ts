@@ -1,7 +1,7 @@
 import { Component, computed, input } from '@angular/core';
-import { PlantGenes } from '../../../procedural/plant-genes';
-import { TypeofPipe } from '../../pipes';
-import { Color } from '../../../procedural/color';
+import { PlantGenes } from '../../../../procedural/plant-genes';
+import { TypeofPipe } from '../../../pipes';
+import { Color } from '../../../../procedural/color';
 import { DecimalPipe } from '@angular/common';
 
 @Component({
