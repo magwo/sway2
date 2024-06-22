@@ -1,9 +1,9 @@
 <svg:g transform="scale(1, -0.4) skewX(40)">
-    <svg:path class="shadow" fill="url(#shadowGradient)" [attr.d]="branchesPath()" />
+    <svg:path fill="url(#shadowGradient)" [attr.d]="branchesPath()" />
 </svg:g>
 
 <svg:path fill="url(#colorGradientAdditional)" [attr.d]="branchesPath()" />
 
-<!-- <svg:g class="fruits" [innerHTML]="fruitsMarkup()" />
-<svg:g class="leaves" [innerHTML]="leavesMarkup()" />
-<svg:g class="flowers" [innerHTML]="flowersMarkup()" /> -->
+<!-- <svg:g class="fruits" [innerHTML]="fruitsMarkup()" />-->
+<svg:g class="leaves" fill="url(#colorGradientAdditional)" [innerHTML]="leavesMarkup()" />
+<!-- <svg:g class="flowers" [innerHTML]="flowersMarkup()" /> -->

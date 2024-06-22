@@ -1,6 +1,8 @@
 // import { StringSink } from 'as-string-sink';
 import { END_WIDTH_FACTOR, Plant, PlantSegment } from '../../../procedural/plant';
 import { PlantGeneData } from '../../../procedural/plant-genes';
+import { EIGTH_CIRCLE, QUARTER_CIRCLE } from '../../../procedural/position';
+import { createRadialArrowsLeafPath, createSimpleLeafPath } from './leaves-svg';
 
 function approxEqual(n1: number, n2: number) {
   return Math.abs(n1 - n2) < 0.000001;
@@ -119,13 +121,18 @@ export function renderSegmentsRecursively(segment: PlantSegment): string {
 }
 
 // 🍀
-function leaf(segment: PlantSegment) {
+function leaf(segment: PlantSegment, genes: PlantGeneData) {
   if (segment.length <= 0) {
     return '';
   }
   const pos = segment.position;
-  const rot = segment.rotation*360/6.283;
-  return `<g transform="translate(${pos.x}, ${pos.y}) scale(${1 + segment.length / 20}) rotate(${rot})"><text text-anchor="middle" dominant-baseline="text-top">🍀</text></g>`;
+  const rot = (segment.rotation)*360/6.283;
+  
+  // const path = `<path d="${createSimpleLeafPath()}" />`;
+  const path = `<path d="${createRadialArrowsLeafPath(genes.leafSubCount, genes.leafSubPointyness, genes.leafElongation)}" />`;
+  
+  return `<g transform="translate(${pos.x}, ${pos.y}) scale(${segment.length * genes.leafSize}) rotate(${rot})">${path}</g>`;
+  // return `<g transform="translate(${pos.x}, ${pos.y}) scale(${1 + segment.length / 20}) rotate(${rot})"><text text-anchor="middle" dominant-baseline="text-top">🍀</text></g>`;
   // return `<circle cx="${pos.x}" cy="${pos.y}" r="0.5" />`;
 }
 
@@ -137,7 +144,7 @@ export function renderLeavesRecursively(segment: PlantSegment, genes: PlantGeneD
   let markup = '';
   for (const subSegment of segment.branches) {
     if (subSegment.type === 'leaf') {
-      markup += leaf(subSegment);
+      markup += leaf(subSegment, genes);
     }
     markup += renderLeavesRecursively(subSegment, genes);
   }

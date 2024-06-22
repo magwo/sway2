@@ -1,3 +1,4 @@
+import { Centimeters } from '../app/app';
 import { Color, getRgbDeviation } from './color';
 import { RandomGenerator } from './random';
 
@@ -11,8 +12,11 @@ export type PlantGeneData = {
   branchCount: number;
   maxBranchDepth: number;
   branchRoundness: number;
-  leafSize: number;
-  flowerSize: number;
+  leafSize: Centimeters;
+  leafElongation: number;
+  leafSubCount: number;
+  leafSubPointyness: number;
+  flowerSize: Centimeters;
   flowerFrequency: number;
   fruitFrequency: number;
   fruitType: string;
@@ -47,6 +51,7 @@ export class PlantGenes {
   private static createRandomGeneData(
     generator: RandomGenerator
   ): PlantGeneData {
+    // TODO: Maybe use sub generators for different aspects?
     const g = generator;
     return {
       baseSize: g.getLinearDistribution(0.4, 0.8),
@@ -58,7 +63,10 @@ export class PlantGenes {
       branchCount: g.getLinearDistribution(1.8, 6.0),//8
       maxBranchDepth: g.getInteger(3, 4), //5
       branchRoundness: g.getLinearDistribution(-0.5, 1.0),
-      leafSize: g.getQuadraticDistribution(50, 150),
+      leafSize: g.getLinearDistribution(5, 15),
+      leafElongation: g.getLinearDistribution(0.1, 4.0),
+      leafSubCount: g.getInteger(4, 12),
+      leafSubPointyness: g.getLinearDistribution(0.01, 0.9),
       flowerSize: g.getQuadraticDistribution(40, 140),
       flowerFrequency: g.getLinearDistribution(-0.1, 0.7),
       fruitFrequency: g.getLinearDistribution(-0.1, 0.4),

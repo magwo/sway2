@@ -82,7 +82,7 @@ export function placeBranches(
         (1 - genes.uniformity) *
           generator.getFloat(-halfStepSize, halfStepSize);
       }
-      anchorRotation = generator.getFloat(-EIGTH_CIRCLE, +EIGTH_CIRCLE);
+      anchorRotation = 0;//generator.getFloat(-EIGTH_CIRCLE, +EIGTH_CIRCLE);
     } else if (i === 0) {
       // Make first branch stick to top of trunk, with limited rotation
       anchorLongitudinal = 1;
