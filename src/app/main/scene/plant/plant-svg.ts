@@ -14,7 +14,7 @@ function segmentBranchPath(segment: PlantSegment): string {
 }
 
 export function renderPlantBranchesMarkup(plant: Plant): string {
-  console.log("WQQIW");
+  // console.log("WQQIW");
   // TODO: Try to increase performance by re-using a large array that is kept
   // at a constant size, presumably by setting length large and keeping the actual
   // NOTE: Arrays with primitive same-type objects may exhibit fast slice due to memcpy.
@@ -45,7 +45,11 @@ export function renderSegmentsRecursively(segment: PlantSegment): string {
       markup += renderSegmentsRecursively(subSegment);
     }
   }
-  markup += `<path d="${segmentBranchPath(segment)}" />`;
+  const pos = segment.position;
+  const rot = (segment.rotation)*360/6.283;
+  const scaleX = segment.width * 0.1;
+  const scaleY = segment.length * 0.1;
+  markup += `<path transform="translate(${pos.x}, ${pos.y}) rotate(${rot}) scale(${scaleY}, ${scaleX})" d="${segmentBranchPath(segment)}" />`;
   return markup;
 }
 
