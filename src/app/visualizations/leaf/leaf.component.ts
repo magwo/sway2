@@ -1,5 +1,4 @@
 import { Component, computed, signal } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { PlantGeneData, PlantGenes } from '../../../procedural/plant-genes';
 import { RandomGenerator } from '../../../procedural/random';
 import { createRadialArrowsLeafPath } from '../../main/scene/plant/leaves-svg';
@@ -15,12 +14,12 @@ export class LeafComponent {
 
   private genes = signal<PlantGenes[]>([]);
   
-  leaves = computed<{genes: PlantGeneData, path: SafeHtml}[]>(() => {
+  leaves = computed<{genes: PlantGeneData, path: string}[]>(() => {
     // TODO: Support more than one type of leaf
     const genes = this.genes();
     const result = genes.map(g => {
-      const pathElem = `<path d="${createRadialArrowsLeafPath(g.data.leafSubCount, g.data.leafSubPointyness, g.data.leafElongation)}" />`;
-      return {genes: g.data, path: this.sanitizer.bypassSecurityTrustHtml(pathElem)};
+      const path = createRadialArrowsLeafPath(g.data.leafSubCount, g.data.leafSubPointyness, g.data.leafElongation);
+      return {genes: g.data, path};
     });
     return result;
   });
@@ -33,7 +32,8 @@ export class LeafComponent {
     } 
   }
 
-  constructor(private sanitizer: DomSanitizer) {
+  constructor() {
+    // TODO: Various leaf types
     const genesCount = 9;
     const parentGenerator = new RandomGenerator(Math.random().toString()); // TODO: Seed could be a route parameter
     const genes = [...Array(genesCount)].map((_, i) => {

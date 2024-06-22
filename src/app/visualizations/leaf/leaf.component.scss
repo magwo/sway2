@@ -17,18 +17,31 @@
     }
 
     .leaf-visualization {
-        width: 200px;
+        width: 160px;
         padding: 4px;
     }
     .leaf-visualization-inner {
-        width: 200px;
-        height: 200px;
+        width: 160px;
+        height: 160px;
 
         svg {
             background: #dfd;
-            fill: #9e9;
-            stroke: #5c5;
-            stroke-width: 0.05;
+
+            text {
+                font-size: 3%;
+                text-anchor: middle;
+            }
+
+            .crosshair {
+                stroke: black;
+                stroke-width: 0.02;
+            }
+
+            .leaf {
+                fill: #9e9;
+                stroke: #5c5;
+                stroke-width: 0.05;
+            }
         }
     }
 }
