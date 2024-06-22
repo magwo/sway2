@@ -1,0 +1,34 @@
+
+:host {
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    p {
+        font-size: 9px;
+        font-family: 'Courier New', Courier, monospace;
+
+        &.datapoint {
+            display: flex;
+            max-width: 140px;
+            justify-content: space-between;
+        }
+    }
+
+    .leaf-visualization {
+        width: 200px;
+        padding: 4px;
+    }
+    .leaf-visualization-inner {
+        width: 200px;
+        height: 200px;
+
+        svg {
+            background: #dfd;
+            fill: #9e9;
+            stroke: #5c5;
+            stroke-width: 0.001;
+        }
+    }
+}
