@@ -145,7 +145,7 @@ export class Plant {
   ) {
     placeBranches(segment, this.generator, this.genes.data, depth);
 
-    if(depth <= this.genes.data.maxBranchDepth) {
+    if(depth <= this.genes.data.branchDepthMax) {
       for (const subSegment of segment.branches) {
         this.planBranchesRecursively(subSegment, depth + 1);
       }

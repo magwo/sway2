@@ -12,7 +12,7 @@ export function createLeafPath(genes: PlantGeneData) {
         case ('radial_slices'):
             return createRadialSlicesLeafPath(genes.leafSubCount, genes.leafSubPointyness, genes.leafElongation, genes.leafDefects);
         case ('slices_on_stick'):
-            return '';
+            return createSlicesOnStickLeafPath(genes.leafSubCount, genes.leafSubPointyness, genes.leafElongation);
     }
     return '';
 }
@@ -89,5 +89,28 @@ function createRadialSlicesLeafPath(numArrows: number, pointyness: ZeroOneFloat,
             path += `A ${0.3*Math.pow(pointLength, 2) / (stepAngle* 2)} ${0.3*Math.pow(pointLength, 2) / (stepAngle* 2)} 0 0 0 ${point.x} ${point.y}`;
         }
     }
+    return path;
+}
+
+function createSlicesOnStickLeafPath(numSlices: number, pointyness: ZeroOneFloat, elongation: number): string {
+    const STICK_LENGTH = 14;
+    const STICK_HALF_WIDTH = 0.3 / 2;
+    const LEAF_HEIGHT = 2.5 + elongation / 2;
+    let path = `M 0 ${STICK_HALF_WIDTH} L ${STICK_LENGTH} ${STICK_HALF_WIDTH*0.5} ${STICK_LENGTH} ${-STICK_HALF_WIDTH*0.5} 0 ${-STICK_HALF_WIDTH} 0 ${STICK_HALF_WIDTH}`;
+
+    const isEvenCount = numSlices % 2 === 0;
+
+    const arcRadius = 1.5 + pointyness * 1.0;
+
+    for(let i=0; i<numSlices; i++) {
+        const fraction = isEvenCount ? Math.floor(i/2)*2 / (numSlices - 1.5) : i / (numSlices - 0.5);
+        const isEven = (i % 2) === 0;
+        const x = fraction * STICK_LENGTH;
+        const yHeight = (1 - fraction * 0.2)*(isEven ? -LEAF_HEIGHT : LEAF_HEIGHT);
+        // path += `M ${x} 0 L ${x} ${yHeight} ${x+.8} ${yHeight} ${x+0.5} 0 ${x} 0`;
+        path += `M ${x} 0 A ${arcRadius} ${arcRadius} 0 0 0 ${x + 1.2} ${yHeight} A ${arcRadius} ${arcRadius} 0 0 0 ${x} 0`;
+        
+    }
+
     return path;
 }

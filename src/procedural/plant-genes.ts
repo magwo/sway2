@@ -12,7 +12,7 @@ export type PlantGeneData = {
   balance: number;
   stiffness: number;
   branchCount: number;
-  maxBranchDepth: number;
+  branchDepthMax: number;
   branchRoundness: number;
   leafType: LeafType;
   leafSize: Centimeters;
@@ -57,6 +57,13 @@ export class PlantGenes {
   ): PlantGeneData {
     // TODO: Maybe use sub generators for different aspects?
     const g = generator;
+    // TODO: Use branch depth 5 when reworked leaf growth logic - very small currently
+    const branchDepthMax = g.getInteger(3, 4); //5
+    let branchCount = g.getLinearDistribution(1.8, 6.0);//8
+    // Protect against low FPS:
+    if (branchDepthMax >= 5 && branchCount > 4) {
+      branchCount *= 0.7;
+    }
     return {
       baseSize: g.getLinearDistribution(0.4, 0.8),
       slimness: g.getLinearDistribution(0.3, 1.9),
@@ -64,12 +71,12 @@ export class PlantGenes {
       uniformity: g.getLinearDistribution(0.2, 0.99),
       balance: g.getLinearDistribution(0.6, 0.99),
       stiffness: g.getLinearDistribution(0.5, 1.0),
-      branchCount: g.getLinearDistribution(1.8, 6.0),//8
-      maxBranchDepth: g.getInteger(3, 4), //5
+      branchCount: branchCount,
+      branchDepthMax: branchDepthMax,
       branchRoundness: g.getLinearDistribution(-0.5, 1.0),
-      leafSize: g.getLinearDistribution(5, 15),
+      leafSize: g.getLinearDistribution(8, 15),
       leafElongation: g.getLinearDistribution(0.1, 1.0),
-      leafType: g.selectOne(['radial_points', 'radial_slices']),
+      leafType: g.selectOne(['radial_points', 'radial_points', 'radial_slices', 'slices_on_stick']),
       leafSubCount: g.getInteger(7, 14),
       leafSubPointyness: g.getLinearDistribution(0.01, 1.0),
       leafDefects: g.getLinearDistribution(0.02, 0.4),

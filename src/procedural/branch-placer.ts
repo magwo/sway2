@@ -54,7 +54,7 @@ export function placeBranches(
   genes: PlantGeneData,
   branchDepth: number
 ) {
-    const isAtDeepestDepth = branchDepth === genes.maxBranchDepth;
+    const isAtDeepestDepth = branchDepth === genes.branchDepthMax;
   const branchCount = isAtDeepestDepth ? 5 : Math.round(
     generator.getFloat(genes.branchCount - 0.5, genes.branchCount + 0.5)
   );
@@ -70,7 +70,7 @@ export function placeBranches(
     const factor = i / branchCount;
     const halfStepSize = 0.5 / branchCount;
 
-    if (branchDepth === genes.maxBranchDepth) {
+    if (branchDepth === genes.branchDepthMax) {
       if (i === 0) {
         type = 'leaf';
         anchorLongitudinal = 1;
