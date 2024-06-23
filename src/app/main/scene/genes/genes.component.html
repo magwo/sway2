@@ -6,7 +6,7 @@
       <span>{{ gene.name }}</span>
       @if ((gene.value | typeof) === 'number') {
       <span>{{ gene.value | number : "1.2-4" }}</span>
-      } @else { Not number
+      } @else {
       <span>{{ gene.value }}</span>
       }
     </div>

@@ -1,7 +1,7 @@
 import { Component, computed, signal } from '@angular/core';
 import { PlantGeneData, PlantGenes } from '../../../procedural/plant-genes';
 import { RandomGenerator } from '../../../procedural/random';
-import { createRadialArrowsLeafPath } from '../../main/scene/plant/leaves-svg';
+import { createLeafPath } from '../../main/scene/plant/leaves-svg';
 
 @Component({
   selector: 'app-leaf',
@@ -18,7 +18,7 @@ export class LeafComponent {
     // TODO: Support more than one type of leaf
     const genes = this.genes();
     const result = genes.map(g => {
-      const path = createRadialArrowsLeafPath(g.data.leafSubCount, g.data.leafSubPointyness, g.data.leafElongation, g.data.leafDefects);
+      const path = createLeafPath(g.data);
       return {genes: g.data, path};
     });
     return result;
@@ -33,8 +33,7 @@ export class LeafComponent {
   }
 
   constructor() {
-    // TODO: Various leaf types
-    const genesCount = 9;
+    const genesCount = 20;
     const parentGenerator = new RandomGenerator(Math.random().toString()); // TODO: Seed could be a route parameter
     const genes = [...Array(genesCount)].map((_, i) => {
       const leafGenerator = parentGenerator.getDerivedGenerator(i);
