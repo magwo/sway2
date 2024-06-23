@@ -1,13 +1,14 @@
-import { Component, computed, effect, input } from '@angular/core';
+import { Component, ElementRef, computed, effect, input, untracked, viewChild } from '@angular/core';
 import { Plant } from '../../../../procedural/plant';
 import { Time } from '../../../common';
-import { renderFlowers, renderFruits, renderLeaves, renderPlantBranchesPath } from './plant-svg';
+import { renderFlowers, renderFruits, renderLeaves, renderPlantBranchesPath, updateLeaves } from './plant-svg';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: '[swayPlant]',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './plant.component.html',
   styleUrl: './plant.component.scss',
   host: {
@@ -29,10 +30,11 @@ export class PlantComponent {
     return renderPlantBranchesPath(plant);
   });
 
-  leavesMarkup = computed<SafeHtml>(() => {
-    const time = this.time();
+  private leavesElement = viewChild.required<ElementRef<SVGGElement>>('leaves');
+
+  leavesMarkup = computed<string>(() => {
     const plant = this.plant();
-    return this.sanitizer.bypassSecurityTrustHtml(renderLeaves(plant));
+    return renderLeaves(plant);
   });
 
   flowersMarkup = computed<SafeHtml>(() => {
@@ -48,6 +50,7 @@ export class PlantComponent {
   });
 
   constructor(private sanitizer: DomSanitizer) {
+    let first = true;
     effect(() => {
       const time = this.time();
       const plant = this.plant();
@@ -56,5 +59,16 @@ export class PlantComponent {
         plant.simulate(time.currentTime - time.previousTime, time.currentTime);
       }
     });
+
+    effect(() => {
+      const time = this.time();
+      const plant = this.plant();
+      const leavesElement = this.leavesElement();
+      if (first) {
+        leavesElement.nativeElement.innerHTML = untracked(() => this.leavesMarkup());
+        first = false;
+      }
+      updateLeaves(plant, leavesElement.nativeElement);
+    })
   }
 }

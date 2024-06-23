@@ -58,7 +58,7 @@ export class SceneComponent {
   plants = computed<Plant[]>(() => {
     const genes = this.genes();
     const genesGenerator = this.genesGenerator();
-    const plantCount = 1;
+    const plantCount = 3;
     const countOffset = this.plantCountOffset();
     const regrowthCounter = this.regrowthCounter();
 
