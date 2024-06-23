@@ -1,4 +1,4 @@
-import { Component, Inject, computed, signal } from '@angular/core';
+import { Component, Inject, OnInit, computed, signal } from '@angular/core';
 import { SceneComponent } from './scene/scene.component';
 import { Time } from '../common';
 import { DOCUMENT } from '@angular/common';
@@ -18,7 +18,7 @@ function random32BitsHex() {
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
 })
-export class MainComponent {
+export class MainComponent implements OnInit {
   growSpeed = signal(10);
   time = signal<Time>({ currentTime: 0, previousTime: 0 });
 
@@ -89,7 +89,6 @@ export class MainComponent {
     return parseInt(searchParams.get('offset') ?? '0');
   });
 
-
   constructor(@Inject(DOCUMENT) private document: Document) {
     // TODO: Use requestAnimationFrame instead
     setInterval(() => {
@@ -105,5 +104,17 @@ export class MainComponent {
         }
       }
     }, 1000/60);
+  }
+
+  ngOnInit() {
+    // ?genes=7c370b46&theme=cebc2379)
+    const genes = this.genes();
+    if (!genes || genes.length === 0) {
+      this.setNewSearchParam('genes', '7c370b46');
+    }
+    const theme = this.theme();
+    if (!theme || theme.length === 0) {
+      this.setNewSearchParam('theme', 'cebc2379');
+    }
   }
 }
