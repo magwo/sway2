@@ -51,7 +51,7 @@ export class MainComponent {
     this.setNewSearchParam('genes', newGenes);
   }
 
-  newTrees() {
+  newPlants() {
     const currentOffset = this.plantOffset();
     this.setNewSearchParam('offset', (currentOffset + 10).toString());
   }

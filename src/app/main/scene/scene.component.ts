@@ -58,7 +58,7 @@ export class SceneComponent {
   plants = computed<Plant[]>(() => {
     const genes = this.genes();
     const genesGenerator = this.genesGenerator();
-    const plantCount = 3;
+    const plantCount = 1;
     const countOffset = this.plantCountOffset();
     const regrowthCounter = this.regrowthCounter();
 
@@ -72,7 +72,7 @@ export class SceneComponent {
       const alternator = i % 2 === 0 ? -1 : 1;
       const plant = new Plant(
         {
-          x: 100 + 60 * Math.ceil(i / 2) * alternator,
+          x: 200 + 60 * Math.ceil(i / 2) * alternator,
           y: 150 + 10 * Math.random(),
         },
         genes,
