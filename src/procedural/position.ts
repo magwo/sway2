@@ -34,6 +34,12 @@ export class PositionMath {
       y: (length * vector.y) / currentLen,
     };
   }
+  static multiply(vector: Position, factor: number) {
+    return {
+      x: vector.x * factor,
+      y: vector.y * factor,
+    }
+  }
   static dotProduct(vector1: Position, vector2: Position): number {
     return vector1.x * vector2.x + vector1.y * vector2.y;
   }
