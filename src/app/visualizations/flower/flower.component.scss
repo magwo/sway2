@@ -24,6 +24,9 @@
         width: 160px;
         height: 160px;
 
+    }
+
+    ::ng-deep {
         svg {
             background: #dfd;
 

@@ -1,7 +1,7 @@
 // import { StringSink } from 'as-string-sink';
 import { END_WIDTH_FACTOR, Plant, PlantSegment } from '../../../../procedural/plant';
 import { PlantGeneData } from '../../../../procedural/plant-genes';
-import { createFlowerPath } from './flowers-svg';
+import { createFlowerMarkup } from './flowers-svg';
 import { createLeafPath } from './leaves-svg';
 
 // function approxEqual(n1: number, n2: number) {
@@ -175,9 +175,9 @@ function updateLeavesRecursively(nodeCounter: number, segment: PlantSegment, gen
 function flower(segment: PlantSegment, genes: PlantGeneData) {
   const pos = segment.position;
   const rot = (segment.rotation)*360/6.283;
-  const path = `<path d="${createFlowerPath(genes)}" />`;
+  const markup = createFlowerMarkup(genes);
   const cmMultiplier = 1 / 100;
-  return `<g transform="translate(${pos.x}, ${pos.y}) scale(${segment.length * genes.flowerSize * cmMultiplier}) rotate(${rot})">${path}</g>`;
+  return `<g transform="translate(${pos.x}, ${pos.y}) scale(${segment.length * genes.flowerSize * cmMultiplier}) rotate(${rot})">${markup}</g>`;
 }
 
 export function renderFlowers(plant: Plant): string {

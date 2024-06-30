@@ -1,7 +1,8 @@
 import { Component, computed, signal } from '@angular/core';
 import { PlantGeneData, PlantGenes } from '../../../procedural/plant-genes';
 import { RandomGenerator } from '../../../procedural/random';
-import { createFlowerPath } from '../../main/scene/plant/flowers-svg';
+import { createFlowerMarkup } from '../../main/scene/plant/flowers-svg';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-flower',
@@ -14,11 +15,11 @@ export class FlowerComponent {
 
   private genes = signal<PlantGenes[]>([]);
   
-  flowers = computed<{genes: PlantGeneData, path: string}[]>(() => {
+  flowers = computed<{genes: PlantGeneData, markup: SafeHtml}[]>(() => {
     const genes = this.genes();
     const result = genes.map(g => {
-      const path = createFlowerPath(g.data);
-      return {genes: g.data, path};
+      const markup = this.sanitizer.bypassSecurityTrustHtml(createFlowerMarkup(g.data));
+      return {genes: g.data, markup};
     });
     return result;
   });
@@ -31,7 +32,7 @@ export class FlowerComponent {
     } 
   }
 
-  constructor() {
+  constructor(private sanitizer: DomSanitizer) {
     const genesCount = 20;
     const parentGenerator = new RandomGenerator(Math.random().toString()); // TODO: Seed could be a route parameter
     const genes = [...Array(genesCount)].map((_, i) => {

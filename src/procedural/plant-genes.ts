@@ -1,5 +1,6 @@
 import { Centimeters } from '../app/common';
 import { Color, getRgbDeviation } from './color';
+import { ZeroOneFloat } from './hash.math';
 import { RandomGenerator } from './random';
 
 export type LeafType = 'radial_points' | 'radial_slices' | 'slices_on_stick';
@@ -25,6 +26,10 @@ export type PlantGeneData = {
   flowerType: FlowerType;
   flowerSize: Centimeters;
   flowerSubCount: number;
+  flowerSubPointyness: number;
+  flowerSubEndWeight: number;
+  flowerSpaciousness: ZeroOneFloat;
+  flowerInnerRadius: ZeroOneFloat;
   flowerFrequency: number;
   fruitFrequency: number;
   fruitType: string;
@@ -70,6 +75,7 @@ export class PlantGenes {
     const leafGenerator = g.getDerivedGenerator('leaf');
     const flowerGenerator = g.getDerivedGenerator('leaf');
     const fruitGenerator = g.getDerivedGenerator('leaf');
+    // TODO: Synchronize leaf and flower size
     return {
       baseSize: g.getLinearDistribution(0.4, 0.8),
       slimness: g.getLinearDistribution(0.3, 1.9),
@@ -88,8 +94,12 @@ export class PlantGenes {
       leafDefects: leafGenerator.getLinearDistribution(0.02, 0.4),
       flowerSize: flowerGenerator.getQuadraticDistribution(4, 20),
       flowerType: flowerGenerator.selectOne(['radial_petals']),
-      flowerSubCount: flowerGenerator.getInteger(4, 7),
-      flowerFrequency: flowerGenerator.getLinearDistribution(-0.1, 0.7),
+      flowerSubCount: flowerGenerator.getInteger(5, 12),
+      flowerSubPointyness: flowerGenerator.getLinearDistribution(-0.3, 0.8),
+      flowerSubEndWeight: flowerGenerator.getLinearDistribution(0.5, 1.5),
+      flowerSpaciousness: flowerGenerator.getLinearDistribution(-0.2, 0.5),
+      flowerInnerRadius: flowerGenerator.getLinearDistribution(0.2, 0.7),
+      flowerFrequency: flowerGenerator.getLinearDistribution(-0.2, 0.4),
       fruitFrequency: fruitGenerator.getLinearDistribution(-0.1, 0.4),
       fruitType: fruitGenerator.selectOne(['🥑', '🍋', '🍑', '🍊', '🍆', '🍒', '🍏', '🍇', '🍍', '🥝'])
       // barkColor: getRgbDeviation({ r: 90, g: 60, b: 20 }, 40, g),

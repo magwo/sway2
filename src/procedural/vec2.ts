@@ -50,10 +50,6 @@ export class Vec2 {
     return { x: targetVector.x * factor, y: targetVector.y * factor };
   }
 
-//   static getNormalOfLength(v1: Position, length: number) {
-    
-//   }
-
   static makeAngleWorkable(angle: number) {
     return ((angle + TWO_PI) % TWO_PI) + TWO_PI;
   }

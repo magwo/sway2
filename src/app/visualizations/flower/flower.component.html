@@ -2,7 +2,7 @@
     <div class="flower-visualization">
         <div class="flower-visualization-inner">
             <svg width="100%" height="100%" preserveAspectRatio="xMidYMax slice" viewBox="-4 -8 16 16" (click)="copyMarkup($event)">
-                <path class="flower" [attr.d]="flower.path" />
+                <g class="flower" [innerHTML]="flower.markup" />
                 <path class="crosshair" d="M -.5 0 H 0.5 M 0 -.5 V .5"></path>
                 
                 <path class="crosshair" d="M 10 -1 V 1"></path>
@@ -11,5 +11,9 @@
         </div>
         <p class="datapoint">flowerType <span>{{flower.genes.flowerType}}</span></p>
         <p class="datapoint">flowerSubCount <span>{{flower.genes.flowerSubCount.toFixed(3)}}</span></p>
+        <p class="datapoint">flowerSubPointyness <span>{{flower.genes.flowerSubPointyness.toFixed(3)}}</span></p>
+        <p class="datapoint">flowerSubEndWeight <span>{{flower.genes.flowerSubEndWeight.toFixed(3)}}</span></p>
+        <p class="datapoint">flowerSpaciousness <span>{{flower.genes.flowerSpaciousness.toFixed(3)}}</span></p>
+        <p class="datapoint">flowerInnerRadius <span>{{flower.genes.flowerInnerRadius.toFixed(3)}}</span></p>
     </div>
 }

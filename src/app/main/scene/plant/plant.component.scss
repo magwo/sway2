@@ -1,6 +1,19 @@
 
 
 :host {
-    .leaves {
+
+    ::ng-deep {
+        svg {
+            fill: red;
+        }
+        .leaves {
+        }
+    
+        .petal {
+            fill: white;
+        }
+        .flower-inner {
+            fill: pink;
+        }
     }
 }
