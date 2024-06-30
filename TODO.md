@@ -8,6 +8,9 @@
 * Branches should avoid each other to some extent. See vector field paper.
 * Cacti
 * Flowers
+** Pop-in with non-linear growth curve (also leaves?)
+** Individual growth durations (also leaves)
+** Gene: Inner disc size (name?)
 * Bushes
 * Trees
 * Moss?
