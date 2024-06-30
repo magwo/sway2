@@ -1,6 +1,7 @@
 // import { StringSink } from 'as-string-sink';
 import { END_WIDTH_FACTOR, Plant, PlantSegment } from '../../../../procedural/plant';
 import { PlantGeneData } from '../../../../procedural/plant-genes';
+import { createFlowerPath } from './flowers-svg';
 import { createLeafPath } from './leaves-svg';
 
 // function approxEqual(n1: number, n2: number) {
@@ -146,6 +147,7 @@ export function updateLeaves(plant: Plant, nativeElement: SVGGElement) {
   // console.log("Native elem is", nativeElement);
   updateLeavesRecursively(0, plant.rootSegment, plant.genes.data, nativeElement);
 }
+
 function updateLeavesRecursively(nodeCounter: number, segment: PlantSegment, genes: PlantGeneData, nativeElement: SVGGElement): number {
   // TODO: Could move this into a, maybe, more performant integration with PlantSegments
   if (segment.type === 'leaf') {
@@ -153,13 +155,12 @@ function updateLeavesRecursively(nodeCounter: number, segment: PlantSegment, gen
     const rot = segment.rotation*360/6.283;
     const cmMultiplier = 1 / 100;
     // const transform = `translate(${pos.x}, ${pos.y}) scale(${segment.length * genes.leafSize * cmMultiplier}) rotate(${rot})`;
-    const pathElem = nativeElement.children[nodeCounter] as SVGPathElement;
-    // console.log(pathElem.transform.baseVal);
+    // nativeElement.children[nodeCounter].setAttribute('transform', transform);
     // THIS IS ABOUT TWICE AS FAST:
+    const pathElem = nativeElement.children[nodeCounter] as SVGPathElement;
     pathElem.transform.baseVal.getItem(0).setTranslate(pos.x, pos.y);
     pathElem.transform.baseVal.getItem(1).setScale(segment.length * genes.leafSize * cmMultiplier, segment.length * genes.leafSize * cmMultiplier);
     pathElem.transform.baseVal.getItem(2).setRotate(rot, 0, 0);
-    // nativeElement.children[nodeCounter].setAttribute('transform', transform);
     nodeCounter += 1;
   }
   for (let i=0; i<segment.branches.length; i++) {
@@ -171,16 +172,12 @@ function updateLeavesRecursively(nodeCounter: number, segment: PlantSegment, gen
   return nodeCounter;
 }
 
-
-
-function flower(segment: PlantSegment) {
-  if (segment.length <= 0) {
-    return '';
-  }
+function flower(segment: PlantSegment, genes: PlantGeneData) {
   const pos = segment.position;
-  const rot = segment.rotation*360/6.283;
-  return `<g transform="translate(${pos.x}, ${pos.y}) scale(${1 + segment.length / 20}) rotate(${rot})"><text text-anchor="middle" dominant-baseline="central">🌸</text></g>`;
-  // return `<circle cx="${pos.x}" cy="${pos.y}" r="0.5" />`;
+  const rot = (segment.rotation)*360/6.283;
+  const path = `<path d="${createFlowerPath(genes)}" />`;
+  const cmMultiplier = 1 / 100;
+  return `<g transform="translate(${pos.x}, ${pos.y}) scale(${segment.length * genes.flowerSize * cmMultiplier}) rotate(${rot})">${path}</g>`;
 }
 
 export function renderFlowers(plant: Plant): string {
@@ -191,12 +188,64 @@ export function renderFlowersRecursively(segment: PlantSegment, genes: PlantGene
   let markup = '';
   for (const subSegment of segment.branches) {
     if (subSegment.type === 'flower') {
-      markup += flower(subSegment);
+      markup += flower(subSegment, genes);
     }
     markup += renderFlowersRecursively(subSegment, genes);
   }
   return markup;
 }
+
+export function updateFlowers(plant: Plant, nativeElement: SVGGElement) {
+  // console.log("Native elem is", nativeElement);
+  updateFlowersRecursively(0, plant.rootSegment, plant.genes.data, nativeElement);
+}
+
+function updateFlowersRecursively(nodeCounter: number, segment: PlantSegment, genes: PlantGeneData, nativeElement: SVGGElement): number {
+  if (segment.type === 'flower') {
+    const pos = segment.position;
+    const rot = segment.rotation*360/6.283;
+    const cmMultiplier = 1 / 100;
+
+    const pathElem = nativeElement.children[nodeCounter] as SVGPathElement;
+    pathElem.transform.baseVal.getItem(0).setTranslate(pos.x, pos.y);
+    pathElem.transform.baseVal.getItem(1).setScale(segment.length * genes.flowerSize * cmMultiplier, segment.length * genes.flowerSize * cmMultiplier);
+    pathElem.transform.baseVal.getItem(2).setRotate(rot, 0, 0);
+    nodeCounter += 1;
+  }
+  for (let i=0; i<segment.branches.length; i++) {
+    const subSegment = segment.branches[i];
+    if(nativeElement.children) {
+      nodeCounter = updateFlowersRecursively(nodeCounter, subSegment, genes, nativeElement);
+    }
+  }
+  return nodeCounter;
+}
+
+
+// function flower(segment: PlantSegment) {
+//   if (segment.length <= 0) {
+//     return '';
+//   }
+//   const pos = segment.position;
+//   const rot = segment.rotation*360/6.283;
+//   return `<g transform="translate(${pos.x}, ${pos.y}) scale(${1 + segment.length / 20}) rotate(${rot})"><text text-anchor="middle" dominant-baseline="central">🌸</text></g>`;
+//   // return `<circle cx="${pos.x}" cy="${pos.y}" r="0.5" />`;
+// }
+
+// export function renderFlowers(plant: Plant): string {
+//   return renderFlowersRecursively(plant.rootSegment, plant.genes.data);
+// }
+
+// export function renderFlowersRecursively(segment: PlantSegment, genes: PlantGeneData): string {
+//   let markup = '';
+//   for (const subSegment of segment.branches) {
+//     if (subSegment.type === 'flower') {
+//       markup += flower(subSegment);
+//     }
+//     markup += renderFlowersRecursively(subSegment, genes);
+//   }
+//   return markup;
+// }
 
 
 function fruit(segment: PlantSegment, genes: PlantGeneData) {

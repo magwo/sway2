@@ -35,10 +35,10 @@ export class RandomGenerator {
   }
 
   /**
-   * @returns A new generator derived from the parent seed and order number. The same parent seed and order number will yield identical derived generators.
+   * @returns A new generator derived from the parent seed and suffix. The same parent seed and suffix will yield identical derived generators.
    */
-  public getDerivedGenerator(order: number) {
-    return new RandomGenerator(`${this.seedString}_${order}`);
+  public getDerivedGenerator(seedSuffix: string) {
+    return new RandomGenerator(`${this.seedString}_${seedSuffix}`);
   }
 
   constructor(public readonly seedString: string) {

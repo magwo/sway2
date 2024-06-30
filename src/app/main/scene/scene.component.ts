@@ -48,7 +48,7 @@ export class SceneComponent {
   });
 
   gradientGenerator = computed<RandomGenerator>(() => {
-    return this.themeGenerator().getDerivedGenerator(0);
+    return this.themeGenerator().getDerivedGenerator('gradient');
   });
 
   genes = computed<PlantGenes>(() => {
@@ -68,7 +68,7 @@ export class SceneComponent {
     const preGrowToAge = currentTime;
 
     return [...Array(plantCount)].map((_, i) => {
-      const plantGenerator = genesGenerator.getDerivedGenerator(countOffset + i);
+      const plantGenerator = genesGenerator.getDerivedGenerator(`plant${countOffset + i}`);
       const alternator = i % 2 === 0 ? -1 : 1;
       const plant = new Plant(
         {

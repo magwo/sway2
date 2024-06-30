@@ -3,6 +3,8 @@ import { Color, getRgbDeviation } from './color';
 import { RandomGenerator } from './random';
 
 export type LeafType = 'radial_points' | 'radial_slices' | 'slices_on_stick';
+export type FlowerType = 'radial_petals';
+export type FruitType = '🥑' | '🍋' | '🍑' | '🍊' | '🍆' | '🍒' | '🍏' | '🍇' | '🍍' | '🥝';
 
 export type PlantGeneData = {
   baseSize: number;
@@ -20,7 +22,9 @@ export type PlantGeneData = {
   leafSubCount: number;
   leafSubPointyness: number;
   leafDefects: number;
+  flowerType: FlowerType;
   flowerSize: Centimeters;
+  flowerSubCount: number;
   flowerFrequency: number;
   fruitFrequency: number;
   fruitType: string;
@@ -55,7 +59,6 @@ export class PlantGenes {
   private static createRandomGeneData(
     generator: RandomGenerator
   ): PlantGeneData {
-    // TODO: Maybe use sub generators for different aspects?
     const g = generator;
     // TODO: Use branch depth 5 when reworked leaf growth logic - very small currently
     const branchDepthMax = g.getInteger(3, 4); //5
@@ -64,6 +67,9 @@ export class PlantGenes {
     if (branchDepthMax >= 5 && branchCount > 4) {
       branchCount *= 0.7;
     }
+    const leafGenerator = g.getDerivedGenerator('leaf');
+    const flowerGenerator = g.getDerivedGenerator('leaf');
+    const fruitGenerator = g.getDerivedGenerator('leaf');
     return {
       baseSize: g.getLinearDistribution(0.4, 0.8),
       slimness: g.getLinearDistribution(0.3, 1.9),
@@ -74,16 +80,18 @@ export class PlantGenes {
       branchCount: branchCount,
       branchDepthMax: branchDepthMax,
       branchRoundness: g.getLinearDistribution(-0.5, 1.0),
-      leafSize: g.getLinearDistribution(8, 15),
-      leafElongation: g.getLinearDistribution(0.1, 1.0),
-      leafType: g.selectOne(['radial_points', 'radial_points', 'radial_slices', 'slices_on_stick']),
-      leafSubCount: g.getInteger(7, 14),
-      leafSubPointyness: g.getLinearDistribution(0.01, 1.0),
-      leafDefects: g.getLinearDistribution(0.02, 0.4),
-      flowerSize: g.getQuadraticDistribution(40, 140),
-      flowerFrequency: g.getLinearDistribution(-0.1, 0.7),
-      fruitFrequency: g.getLinearDistribution(-0.1, 0.4),
-      fruitType: g.selectOne(['🥑', '🍋', '🍑', '🍊', '🍆', '🍒', '🍏', '🍇', '🍍', '🥝'])
+      leafSize: leafGenerator.getLinearDistribution(8, 15),
+      leafElongation: leafGenerator.getLinearDistribution(0.1, 1.0),
+      leafType: leafGenerator.selectOne(['radial_points', 'radial_points', 'radial_slices', 'slices_on_stick']),
+      leafSubCount: leafGenerator.getInteger(7, 14),
+      leafSubPointyness: leafGenerator.getLinearDistribution(0.01, 1.0),
+      leafDefects: leafGenerator.getLinearDistribution(0.02, 0.4),
+      flowerSize: flowerGenerator.getQuadraticDistribution(4, 20),
+      flowerType: flowerGenerator.selectOne(['radial_petals']),
+      flowerSubCount: flowerGenerator.getInteger(4, 7),
+      flowerFrequency: flowerGenerator.getLinearDistribution(-0.1, 0.7),
+      fruitFrequency: fruitGenerator.getLinearDistribution(-0.1, 0.4),
+      fruitType: fruitGenerator.selectOne(['🥑', '🍋', '🍑', '🍊', '🍆', '🍒', '🍏', '🍇', '🍍', '🥝'])
       // barkColor: getRgbDeviation({ r: 90, g: 60, b: 20 }, 40, g),
       // leafColor: getRgbDeviation({ r: 62, g: 205, b: 4 }, 50, g),
       // flowerColor: getRgbDeviation({ r: 245, g: 221, b: 224 }, 100, g),

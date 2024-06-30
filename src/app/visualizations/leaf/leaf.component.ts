@@ -15,7 +15,6 @@ export class LeafComponent {
   private genes = signal<PlantGenes[]>([]);
   
   leaves = computed<{genes: PlantGeneData, path: string}[]>(() => {
-    // TODO: Support more than one type of leaf
     const genes = this.genes();
     const result = genes.map(g => {
       const path = createLeafPath(g.data);
@@ -36,7 +35,7 @@ export class LeafComponent {
     const genesCount = 20;
     const parentGenerator = new RandomGenerator(Math.random().toString()); // TODO: Seed could be a route parameter
     const genes = [...Array(genesCount)].map((_, i) => {
-      const leafGenerator = parentGenerator.getDerivedGenerator(i);
+      const leafGenerator = parentGenerator.getDerivedGenerator(`leaves${i}`);
       const leafGenes = PlantGenes.generateNew(leafGenerator);
       return leafGenes;
     });

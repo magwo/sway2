@@ -1,0 +1,47 @@
+
+:host {
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    p {
+        font-size: 9px;
+        font-family: 'Courier New', Courier, monospace;
+
+        &.datapoint {
+            display: flex;
+            max-width: 140px;
+            justify-content: space-between;
+        }
+    }
+
+    .flower-visualization {
+        width: 160px;
+        padding: 4px;
+    }
+    .flower-visualization-inner {
+        width: 160px;
+        height: 160px;
+
+        svg {
+            background: #dfd;
+
+            text {
+                font-size: 3%;
+                text-anchor: middle;
+            }
+
+            .crosshair {
+                stroke: black;
+                stroke-width: 0.02;
+            }
+
+            .flower {
+                fill: #9e9;
+                stroke: #5c5;
+                stroke-width: 0.05;
+            }
+        }
+    }
+}
