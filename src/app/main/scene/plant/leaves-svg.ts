@@ -1,6 +1,6 @@
 import { ZeroOneFloat } from "../../../../procedural/hash.math";
 import { PlantGeneData } from "../../../../procedural/plant-genes";
-import { HALF_CIRCLE, PositionMath } from "../../../../procedural/position";
+import { HALF_CIRCLE, Vec2 } from "../../../../procedural/vec2";
 
 // NOTE: Leafs should have target size 10x10, then scaled by renderer to proper size
 
@@ -43,7 +43,7 @@ function createRadialArrowsLeafPath(numArrows: number, pointyness: ZeroOneFloat,
             y: WIDTH * Math.sin(angle)
         };
         if (isInner) {
-            point = PositionMath.multiply(point, 1 - INNER_LENGTH_MULTIPLIER);
+            point = Vec2.multiply(point, 1 - INNER_LENGTH_MULTIPLIER);
         }
         
         const command = i === 0 ? 'M' : 'L';
@@ -77,10 +77,10 @@ function createRadialSlicesLeafPath(numArrows: number, pointyness: ZeroOneFloat,
             x: origoX + LENGTH * Math.cos(angle),
             y: WIDTH * Math.sin(angle)
         };
-        const pointLength = isInner ? previousLength : PositionMath.length2D(point);
+        const pointLength = isInner ? previousLength : Vec2.length2D(point);
         previousLength = pointLength;
         if (isInner) {
-            point = PositionMath.multiply(point, 1 - INNER_LENGTH_MULTIPLIER);
+            point = Vec2.multiply(point, 1 - INNER_LENGTH_MULTIPLIER);
         }
         
         if(i === 0) {

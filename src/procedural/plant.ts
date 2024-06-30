@@ -4,9 +4,9 @@ import {
   EIGTH_CIRCLE,
   FULL_CIRCLE,
   Position,
-  PositionMath,
+  Vec2,
   QUARTER_CIRCLE,
-} from './position';
+} from './vec2';
 import { RandomGenerator } from './random';
 import { placeBranches } from './branch-placer';
 import { TimeSeconds } from '../app/common';
@@ -40,7 +40,7 @@ export class PlantSegment {
 
   getEndPoint() {
     // TODO: Curvature?
-    return PositionMath.addDirectionAndLength(
+    return Vec2.addInDirection(
       this.position,
       this.rotation,
       this.length
@@ -48,7 +48,7 @@ export class PlantSegment {
   }
   getBaseRight() {
     // TODO: Curvature?
-    return PositionMath.addDirectionAndLength(
+    return Vec2.addInDirection(
       this.position,
       this.rotation + QUARTER_CIRCLE,
       this.width
@@ -56,7 +56,7 @@ export class PlantSegment {
   }
   getBaseLeft() {
     // TODO: Curvature?
-    return PositionMath.addDirectionAndLength(
+    return Vec2.addInDirection(
       this.position,
       this.rotation - QUARTER_CIRCLE,
       this.width
@@ -66,12 +66,12 @@ export class PlantSegment {
   getEndRight() {
     // TODO: Curvature?
     // TODO: What about end width? Same as next segment base width
-    const endPoint = PositionMath.addDirectionAndLength(
+    const endPoint = Vec2.addInDirection(
       this.position,
       this.rotation,
       this.length
     );
-    return PositionMath.addDirectionAndLength(
+    return Vec2.addInDirection(
       endPoint,
       this.rotation + QUARTER_CIRCLE,
       this.width * END_WIDTH_FACTOR
@@ -80,12 +80,12 @@ export class PlantSegment {
   getEndLeft() {
     // TODO: Curvature?
     // TODO: What about end width? Same as next segment base width
-    const endPoint = PositionMath.addDirectionAndLength(
+    const endPoint = Vec2.addInDirection(
       this.position,
       this.rotation,
       this.length
     );
-    return PositionMath.addDirectionAndLength(
+    return Vec2.addInDirection(
       endPoint,
       this.rotation - QUARTER_CIRCLE,
       this.width * END_WIDTH_FACTOR
@@ -93,7 +93,7 @@ export class PlantSegment {
   }
 
   getBranchPosition(anchorFactor: number) {
-    return PositionMath.addDirectionAndLength(
+    return Vec2.addInDirection(
       this.position,
       this.rotation,
       this.length * anchorFactor

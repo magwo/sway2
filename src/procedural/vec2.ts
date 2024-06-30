@@ -6,7 +6,7 @@ export const HALF_CIRCLE = Math.PI;
 export const FULL_CIRCLE = TWO_PI;
 
 export type Position = { x: number; y: number };
-export class PositionMath {
+export class Vec2 {
   private constructor() {}
   static length2D(p: Position) {
     return Math.sqrt(p.x * p.x + p.y * p.y);
@@ -14,7 +14,7 @@ export class PositionMath {
   static add(p1: Position, p2: Position): Position {
     return { x: p1.x + p2.x, y: p1.y + p2.y };
   }
-  static addDirectionAndLength(p: Position, angle: number, length: number): Position {
+  static addInDirection(p: Position, angle: number, length: number): Position {
     return { x: p.x + length * Math.cos(angle), y: p.y + length * Math.sin(angle) };
   }
   static delta(p1: Position, p0: Position): Position {
@@ -24,11 +24,11 @@ export class PositionMath {
     return Math.atan2(vector.y, vector.x);
   }
   static normalize(vector: Position): Position {
-    const len = PositionMath.length2D(vector);
+    const len = Vec2.length2D(vector);
     return { x: vector.x / len, y: vector.y / len };
   }
   static toLength(vector: Position, length: number): Position {
-    const currentLen = PositionMath.length2D(vector);
+    const currentLen = Vec2.length2D(vector);
     return {
       x: (length * vector.x) / currentLen,
       y: (length * vector.y) / currentLen,
@@ -44,8 +44,8 @@ export class PositionMath {
     return vector1.x * vector2.x + vector1.y * vector2.y;
   }
   static projectOn(vector: Position, targetVector: Position): Position {
-    const dotProduct = PositionMath.dotProduct(vector, targetVector);
-    const targetLenSqrd = PositionMath.dotProduct(targetVector, targetVector);
+    const dotProduct = Vec2.dotProduct(vector, targetVector);
+    const targetLenSqrd = Vec2.dotProduct(targetVector, targetVector);
     const factor = dotProduct / targetLenSqrd;
     return { x: targetVector.x * factor, y: targetVector.y * factor };
   }

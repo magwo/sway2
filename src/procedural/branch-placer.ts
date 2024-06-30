@@ -5,7 +5,7 @@ import {
   HALF_CIRCLE,
   QUARTER_CIRCLE,
   SIXTEENTH_CIRCLE,
-} from './position';
+} from './vec2';
 import { RandomGenerator } from './random';
 
 function getBranchRotation(

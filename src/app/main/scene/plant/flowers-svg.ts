@@ -1,6 +1,6 @@
 import { ZeroOneFloat } from "../../../../procedural/hash.math";
 import { PlantGeneData } from "../../../../procedural/plant-genes";
-import { HALF_CIRCLE, Position, PositionMath, QUARTER_CIRCLE } from "../../../../procedural/position";
+import { HALF_CIRCLE, Position, Vec2, QUARTER_CIRCLE } from "../../../../procedural/vec2";
 
 // NOTE: Flowers should have target size 10x10, then scaled by renderer to proper size
 
@@ -34,21 +34,21 @@ function createRadialPetalsPath(numPetals: number): string {
     for (let i=0; i<numPetals; i++) {
         const angle = startAngle + i * stepAngle;
 
-        const start = PositionMath.addDirectionAndLength(origo, angle, LENGTH*INNER_LENGTH_MULTIPLIER);
+        const start = Vec2.addInDirection(origo, angle, LENGTH*INNER_LENGTH_MULTIPLIER);
         path += moveCommand(start);
 
-        const petalPoint = PositionMath.addDirectionAndLength(origo, angle + petalStepAngle / 2, LENGTH);
+        const petalPoint = Vec2.addInDirection(origo, angle + petalStepAngle / 2, LENGTH);
         path += lineCommand(petalPoint);
 
-        const end = PositionMath.addDirectionAndLength(origo, angle + petalStepAngle, LENGTH*INNER_LENGTH_MULTIPLIER);
+        const end = Vec2.addInDirection(origo, angle + petalStepAngle, LENGTH*INNER_LENGTH_MULTIPLIER);
         path += lineCommand(end);
         path += lineCommand(start);
     }
     // Add inner circle:
-    const circleStart = PositionMath.addDirectionAndLength(origo, -QUARTER_CIRCLE, LENGTH * INNER_LENGTH_MULTIPLIER);
+    const circleStart = Vec2.addInDirection(origo, -QUARTER_CIRCLE, LENGTH * INNER_LENGTH_MULTIPLIER);
     path += moveCommand(circleStart);
-    path += arcCommand(PositionMath.addDirectionAndLength(origo, QUARTER_CIRCLE, LENGTH * INNER_LENGTH_MULTIPLIER));
-    path += arcCommand(PositionMath.addDirectionAndLength(origo, -QUARTER_CIRCLE, LENGTH * INNER_LENGTH_MULTIPLIER));
+    path += arcCommand(Vec2.addInDirection(origo, QUARTER_CIRCLE, LENGTH * INNER_LENGTH_MULTIPLIER));
+    path += arcCommand(Vec2.addInDirection(origo, -QUARTER_CIRCLE, LENGTH * INNER_LENGTH_MULTIPLIER));
     return path;
 }
 
