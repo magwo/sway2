@@ -1,6 +1,6 @@
 import { ZeroOneFloat } from "../../../../procedural/hash.math";
 import { PlantGeneData } from "../../../../procedural/plant-genes";
-import { HALF_CIRCLE, Position, Vec2, QUARTER_CIRCLE } from "../../../../procedural/vec2";
+import { HALF_CIRCLE, Vector2, Vec2, QUARTER_CIRCLE } from "../../../../procedural/vec2";
 
 // NOTE: Flowers should have target size 10x10, then scaled by renderer to proper size
 
@@ -52,14 +52,14 @@ function createRadialPetalsPath(numPetals: number): string {
     return path;
 }
 
-function moveCommand(p: Position) {
+function moveCommand(p: Vector2) {
     return `M ${p.x} ${p.y} `;
 }
 
-function lineCommand(p: Position) {
+function lineCommand(p: Vector2) {
     return `L ${p.x} ${p.y} `;
 }
 
-function arcCommand(p: Position) {
+function arcCommand(p: Vector2) {
     return `A 1 1 0 0 0 ${p.x} ${p.y} `;
 }

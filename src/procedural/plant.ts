@@ -3,7 +3,7 @@ import { PlantGenes } from './plant-genes';
 import {
   EIGTH_CIRCLE,
   FULL_CIRCLE,
-  Position,
+  Vector2,
   Vec2,
   QUARTER_CIRCLE,
 } from './vec2';
@@ -25,7 +25,7 @@ export class PlantSegment {
 
   constructor(
     public parent: PlantSegment | undefined,
-    public position: Position,
+    public position: Vector2,
     public rotation: number,
     public length: number,
     public width: number,
@@ -105,7 +105,7 @@ export class Plant {
   public age = 0;
   public readonly rootSegment: PlantSegment;
 
-  constructor(public position: Position, public readonly genes: PlantGenes, private generator: RandomGenerator) {
+  constructor(public position: Vector2, public readonly genes: PlantGenes, private generator: RandomGenerator) {
     const rootDensity = 1.0;
     this.rootSegment = new PlantSegment(
         undefined,
