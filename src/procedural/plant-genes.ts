@@ -99,8 +99,8 @@ export class PlantGenes {
       flowerSubEndWeight: flowerGenerator.getLinearDistribution(0.5, 1.5),
       flowerSpaciousness: flowerGenerator.getLinearDistribution(-0.2, 0.5),
       flowerInnerRadius: flowerGenerator.getLinearDistribution(0.2, 0.7),
-      flowerFrequency: flowerGenerator.getLinearDistribution(-0.2, 0.4),
-      fruitFrequency: fruitGenerator.getLinearDistribution(-0.1, 0.4),
+      flowerFrequency: 0,//flowerGenerator.getLinearDistribution(-0.2, 0.4),
+      fruitFrequency: 0,//fruitGenerator.getLinearDistribution(-0.1, 0.4),
       fruitType: fruitGenerator.selectOne(['🥑', '🍋', '🍑', '🍊', '🍆', '🍒', '🍏', '🍇', '🍍', '🥝'])
       // barkColor: getRgbDeviation({ r: 90, g: 60, b: 20 }, 40, g),
       // leafColor: getRgbDeviation({ r: 62, g: 205, b: 4 }, 50, g),
