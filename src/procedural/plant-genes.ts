@@ -88,7 +88,7 @@ export class PlantGenes {
       branchRoundness: g.getLinearDistribution(-0.5, 1.0),
       leafSize: leafGenerator.getLinearDistribution(8, 15),
       leafElongation: leafGenerator.getLinearDistribution(0.1, 1.0),
-      leafType: leafGenerator.selectOne(['radial_points', 'radial_points', 'radial_slices', 'slices_on_stick']),
+      leafType: leafGenerator.selectOne(['radial_points', 'radial_slices', 'slices_on_stick']),
       leafSubCount: leafGenerator.getInteger(7, 14),
       leafSubPointyness: leafGenerator.getLinearDistribution(0.01, 1.0),
       leafDefects: leafGenerator.getLinearDistribution(0.02, 0.4),

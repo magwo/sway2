@@ -141,4 +141,31 @@ export class SceneComponent {
 
     return [start, end];
   });
+
+
+  protected petalGradient = computed<[HslaColor, HslaColor]>(() => {
+    const otherColor = this.additionalColorGradient();
+
+    const hue = (otherColor[0].h + 180) % 360; // Complement color
+    const saturation = Math.min(255, otherColor[0].s);
+    const lightness = otherColor[0].l * 1.4;
+    
+    const start = new HslaColor(hue, saturation*2, lightness, 1);
+    const end = new HslaColor(hue, saturation, lightness, 0.5);
+
+    return [start, end];
+  });
+
+  protected flowerInnerGradient = computed<[HslaColor, HslaColor]>(() => {
+    const otherColor = this.additionalColorGradient();
+
+    const hue = (otherColor[0].h + 90) % 360; // Complement color
+    const saturation = Math.min(255, otherColor[0].s * 2);
+    const lightness = otherColor[0].l;
+    
+    const start = new HslaColor(hue, saturation, lightness, 0.2);
+    const end = new HslaColor(hue, saturation, lightness, 1.0);
+
+    return [start, end];
+  });
 }

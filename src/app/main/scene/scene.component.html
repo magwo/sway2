@@ -25,26 +25,14 @@
             <stop offset="90%" stop-color="rgba(255, 255, 255, 0.005)"/>
         </linearGradient>
 
-
-	    <filter id="sofGlow" height="300%" width="300%" x="-75%" y="-75%">
-            <!-- Thicken out the original shape -->
-            <feMorphology operator="dilate" radius="0.2" in="SourceAlpha" result="thicken" />
-
-            <!-- Use a gaussian blur to create the soft blurriness of the glow -->
-            <feGaussianBlur in="thicken" stdDeviation="1" result="blurred" />
-
-            <!-- Change the colour -->
-            <feFlood [attr.flood-color]="primaryColorGradient()[0].toString()" result="glowColor" />
-
-            <!-- Color in the glows -->
-            <feComposite in="glowColor" in2="blurred" operator="in" result="softGlow_colored" />
-
-            <!--	Layer the effects together -->
-            <feMerge>
-                <feMergeNode in="softGlow_colored"/>
-                <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-        </filter>
+        <radialGradient id="petalGradient">
+            <stop offset="1%" [attr.stop-color]="petalGradient()[0].toString()"/>
+            <stop offset="99%" [attr.stop-color]="petalGradient()[1].toString()"/>
+        </radialGradient>
+        <radialGradient id="flowerInnerGradient">
+            <stop offset="1%" [attr.stop-color]="flowerInnerGradient()[0].toString()"/>
+            <stop offset="99%" [attr.stop-color]="flowerInnerGradient()[1].toString()"/>
+        </radialGradient>
     </defs>
     <rect fill="url(#colorGradientPrimary)" height="100%" width="100%"/>
     <rect fill="url(#colorGradientAdditional)" height="100%" width="100%"/>

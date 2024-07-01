@@ -3,17 +3,17 @@
 :host {
 
     ::ng-deep {
-        svg {
-            fill: red;
-        }
+        // svg {
+        //     fill: red;
+        // }
         .leaves {
         }
     
         .petal {
-            fill: white;
+            fill: url(#petalGradient);
         }
         .flower-inner {
-            fill: pink;
+            fill: url(#flowerInnerGradient);
         }
     }
 }
