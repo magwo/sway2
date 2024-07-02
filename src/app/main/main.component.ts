@@ -1,7 +1,8 @@
 import { Component, Inject, OnInit, computed, signal } from '@angular/core';
 import { SceneComponent } from './scene/scene.component';
 import { Time } from '../common';
-import { DOCUMENT } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 function random32BitsHex() {
   const rndHex = (() => {
@@ -14,7 +15,7 @@ function random32BitsHex() {
 @Component({
   selector: 'sway-main',
   standalone: true,
-  imports: [SceneComponent],
+  imports: [SceneComponent, RouterLink],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
 })
